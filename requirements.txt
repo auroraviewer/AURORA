@@ -1,0 +1,17 @@
+pandas>=2.2.3
+tqdm>=4.67.1
+tifffile>=2024.12.12
+geopandas>=1.0.1
+rasterio>=1.4.1
+scanpy>=1.10.4
+opencv-python>=4.11.0
+imagecodecs>=2024.6.1
+timm>=1.0.14
+huggingface_hub>=0.27.1
+pybiomart>=0.2.0
+tensorboard>=2.18.0
+openslide-python>=1.4.1
+openslide-bin
+einops>=0.8.0
+scikit-image>=0.25.0
+lightning>=2.5.0.post0
