@@ -76,7 +76,7 @@ python -u $CODE_PATH/segment_image.py -p $PROJECT_PATH -d wsis -s wsis_segmentat
 ```
 
 #### 1.2 H&E feature extraction
-First, we rescale H&E images to the same resolution (by default, 0.5 µm/pixel). By default, we assume the images are in `.svs` format, which has a built in pixel size parameter. You can also use other image format like `.tif`. But you need to manually [specify](1-Apply-AURORA-on-new-samples-inference-only) the pixel size in the `metadata` file.
+First, we rescale H&E images to the same resolution (by default, 0.5 µm/pixel). By default, we assume the images are in `.svs` format, which has a built in pixel size parameter. You can also use other image format like `.tif`. But you need to manually [specify](#1-apply-aurora-on-new-samples-inference-only) the pixel size in the `metadata` file.
 ```
 python -u $CODE_PATH/rescale.py --inference -p $PROJECT_PATH -m Inference_samples.csv -o AURORA_interim --image_path wsis --seg_path wsis_segmentation --plot
 ```
