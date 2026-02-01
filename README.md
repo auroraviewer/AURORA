@@ -16,6 +16,12 @@ pip install -r requirements.txt
 ```
 **Note**: Please install [pytorch](https://pytorch.org/) consistent with your `cuda` version.
 
+### Download AURORA
+```
+git clone https://github.com/auroraviewer/AURORA.git
+```
+The codes for AURORA will be under `./AURORA/code`. You can set this path as an environment variable `CODE_PATH` for later usage.
+
 ### Install HEST (optional)
 AURORA relies on [HEST](https://github.com/mahmoodlab/HEST?tab=readme-ov-file) to preprocess samples before **training**.
 ```
@@ -56,15 +62,19 @@ export PROJECT_PATH=/project/iclip/zchen/AURORA_github/examples
 export CODE_PATH=[Your AURORA code path]
 # Path to data and output
 export PROJECT_PATH=[Your project folder]
-``` 
-**Note**: AURORA supposes that all codes needed are stored under `CODE_PATH` and all files needed are under `PROJECT_PATH`.
+```
+**Note**: If you download AURORA using git, then you can set `CODE_PATH` as `./AURORA/code`. AURORA supposes that all codes needed are stored under `CODE_PATH` and all files needed are under `PROJECT_PATH`.
 
 ### 1. Apply AURORA on new samples (inference-only)
 AURORA requires a `metadata` file (`.csv` format) to store the name of all images to analyze, together with other information. The `metadata` file should contain the following columns:
  - `Image_name`: The name of image files to predict (with extension like .svs, .tif);
  - `Sample_name`: This will be used to index all images. So, no replicates should appear in this column. This can be the same as the image name without the extension suffix. You can also use a shorter version if the image name is too long;
+ - `Bulk_sample_name`: The name of bulk samples corresponding to the image files in the bulk expressions matrix. The bulk data should be stored in a `csv` file with each row representing a gene and each column representing a sample. An example of the expression matrix can be found at [TCGA_LUAD_expression.csv](/examples/TCGA_LUAD_expression.csv)
  - `Image_folder` (optional): If images are stored in separate folders, please provide the names of these folders;
  - `Pixel_size_um` (optional): If you are using a format other than `.svs`, please specify the pixel size (in µm) in this column.
+
+An example of the required `metadata` file is at [Inference_sample.csv](examples/Inference_samples.csv). You can download a test sample from [TCGA-86-A4P8-01A-01-TSA](https://portal.gdc.cancer.gov/files/00d4fa70-79a9-4cbc-b0c5-388323a4db9f). 
+
 #### 1.1 Tissue segmentation
 (Some parts of codes are borrowed from [CLAM](https://github.com/mahmoodlab/CLAM))
 
@@ -102,6 +112,7 @@ export ISTAR_PATH=$CODE_PATH/istar/
 python -u $CODE_PATH/run_istar.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --sample_sheet Inference_samples.csv --gene_list_file AURORA_interim/Gene_to_predict.csv --celltype_file AURORA_interim/deconvolution/cell_types.csv --patch_size 224
 ```
 
+---
 
 If you want to train your own AURORA model, please following the following steps.
 ### 2. Visium data preprocessing (training-only, optional)
@@ -153,7 +164,7 @@ Before preprocessing, we need a `.csv` file with three columns:
  - Sample folder names under `raw_data`;
  - The name of the full resolution H&E image.
 
-An example sample list can be found [here](/examples/Sample_metadata.csv).
+An example sample list can be found [here](/examples/Training_samples.csv).
 
 You can generate this sample list using the following script.
 ```
