@@ -82,7 +82,7 @@ You can put all H&E images within one folder (e.g. `wsis`). We also support a fo
 
 The preset file can be downloaded from [CLAM](https://github.com/mahmoodlab/CLAM). More information about these parameters can also be found there. We provide two examples: `example/tcga.csv` (tested on TCGA-BRCA and TCGA-KIRC) and `example/lung.csv` (suitable for TCGA-LUAD).
 ```
-python -u $CODE_PATH/segment_image.py -p $PROJECT_PATH -d wsis -s wsis_segmentation --code_path $CODE_PATH --preset tcga.csv
+python -u $CODE_PATH/segment_image.py -p $PROJECT_PATH -d wsis -s wsis_segmentation --code_path $CODE_PATH --preset lung.csv
 ```
 
 #### 1.2 H&E feature extraction
