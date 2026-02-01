@@ -8,6 +8,11 @@ For convenience, we recommend creating and activating a dedicated conda environm
 conda create -n aurora python=3.12
 conda activate aurora
 ```
+### Download AURORA
+```
+git clone https://github.com/auroraviewer/AURORA.git
+```
+The codes for AURORA will be under `./AURORA/code`. You can set this path as an environment variable `CODE_PATH` for later usage.
 ### Install dependencies
 ```
 conda install conda-forge::pyvips
@@ -15,12 +20,6 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu130
 pip install -r requirements.txt
 ```
 **Note**: Please install [pytorch](https://pytorch.org/) consistent with your `cuda` version.
-
-### Download AURORA
-```
-git clone https://github.com/auroraviewer/AURORA.git
-```
-The codes for AURORA will be under `./AURORA/code`. You can set this path as an environment variable `CODE_PATH` for later usage.
 
 ### Install HEST (optional)
 AURORA relies on [HEST](https://github.com/mahmoodlab/HEST?tab=readme-ov-file) to preprocess samples before **training**.
