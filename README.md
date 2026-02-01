@@ -11,6 +11,7 @@ conda activate aurora
 ### Download AURORA
 ```
 git clone https://github.com/auroraviewer/AURORA.git
+cd AURORA
 ```
 The codes for AURORA will be under `./AURORA/code`. You can set this path as an environment variable `CODE_PATH` for later usage.
 ### Install dependencies
