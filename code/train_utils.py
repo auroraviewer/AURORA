@@ -379,7 +379,7 @@ def load_data(datasets, gene_list, main_dir, processed_data_dir,
             data_tmp = (embs, window_masks,spot_weight, cnts_filtered, gene_mask, bulk_filtered, bulk_rank, max_filtered, father_patches, major_prop_filtered)
             data.append(data_tmp)
             # Save the data to a file
-            utils.save_pickle(data_tmp,f"{file_dir}/{dataset.replace(".h5","")}.pkl")
+            utils.save_pickle(data_tmp,f"{file_dir}/{dataset.replace('.h5','')}.pkl")
     else:
         data = []
         for dataset in datasets:
