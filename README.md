@@ -91,10 +91,17 @@ First, we rescale H&E images to the same resolution (by default, 0.5 µm/pixel).
 python -u $CODE_PATH/rescale.py --inference -p $PROJECT_PATH -m Inference_samples.csv -o AURORA_interim --image_path wsis --seg_path wsis_segmentation --plot
 ```
 
-Then, we extract image features using [UNI-2h](https://huggingface.co/MahmoodLab/UNI2-h). Please first create a token on huggingface following this [tutorial](https://huggingface.co/docs/hub/en/security-tokens). 
+Then, we extract image features using [UNI2-h](https://huggingface.co/MahmoodLab/UNI2-h). Please first create a token on huggingface following this [tutorial](https://huggingface.co/docs/hub/en/security-tokens). 
 ```
 python -u $CODE_PATH/extract_features.py --inference -p $PROJECT_PATH -m Inference_samples.csv -o AURORA_interim --image_path wsis --seg_path wsis_segmentation -b 128 --plot --token [YOUR_HF_TOKEN]
 ```
+
+**Note**: To load UNI2-h from local, please first clone [UNI2-h](https://huggingface.co/MahmoodLab/UNI2-h) to your local machine following the instructions [here](https://huggingface.co/MahmoodLab/UNI2-h/tree/main?clone=true). Then use the following code to extract image features:
+```
+python -u $CODE_PATH/extract_features.py --inference -p $PROJECT_PATH -m Inference_samples.csv -o AURORA_interim --image_path wsis --seg_path wsis_segmentation -b 128 --plot --UNI_local_path [YOUR_LOCAL_UNI_PATH]
+```
+
+Here [YOUR_LOCAL_UNI_PATH] should be the **absolute path** to your UNI model, for example `/home/UNI2-h`.
 
 #### 1.3 Predict gene expressions
 We provided AURORA prediction models for three cancer types: lung adenocarcinoma (LUAD), breast invasive carcinoma (BRCA), and kidney renal clear cell carcinoma (KIRC). You can download the checkpoints and model parameters at XXX and put them under your project folder (`PROJECT_PATH`). Then, specify model parameter file using `-j` and checkpoint file using `--model_pth`. The output folder can be set by `-t`.
