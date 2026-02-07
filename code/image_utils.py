@@ -1,3 +1,4 @@
+# from pyexpat import model
 import cv2
 import numpy as np
 import h5py
@@ -46,32 +47,57 @@ def cut_and_rescale_image(image, mask, loc, raw_pixel_size, target_pixel_size = 
         loc = loc.round().astype(int)
     return image, mask, loc, (row_min, row_max, col_min, col_max, scale_factor)
 
-def get_UNI_model(token, version = "UNI2-h"):
-    login(token=token)
-    # pretrained=True needed to load UNI weights (and download weights for the first time)
-    # init_values need to be passed in to successfully load LayerScale parameters (e.g. - block.0.ls1.gamma)
-    print(f"Loading model: {version}")
-    if version == "UNI":
-        model = timm.create_model("hf-hub:MahmoodLab/uni", pretrained=True, init_values=1e-5, dynamic_img_size=True)
-        transform = create_transform(**resolve_data_config(model.pretrained_cfg, model=model))
-    elif version == "UNI2-h":
-        timm_kwargs = {
-            'img_size': 224, 
-            'patch_size': 14, 
-            'depth': 24,
-            'num_heads': 24,
-            'init_values': 1e-5, 
-            'embed_dim': 1536,
-            'mlp_ratio': 2.66667*2,
-            'num_classes': 0, 
-            'no_embed_class': True,
-            'mlp_layer': timm.layers.SwiGLUPacked, 
-            'act_layer': torch.nn.SiLU, 
-            'reg_tokens': 8, 
-            'dynamic_img_size': True
-            }
-        model = timm.create_model("hf-hub:MahmoodLab/UNI2-h", pretrained=True, **timm_kwargs)
-        transform = create_transform(**resolve_data_config(model.pretrained_cfg, model=model))
+def get_UNI_model(token, version = "UNI2-h", from_local = False):
+    if not from_local:
+        login(token=token)
+        # pretrained=True needed to load UNI weights (and download weights for the first time)
+        # init_values need to be passed in to successfully load LayerScale parameters (e.g. - block.0.ls1.gamma)
+        print(f"Loading model: {version}")
+        if version == "UNI":
+            model = timm.create_model("hf-hub:MahmoodLab/uni", pretrained=True, init_values=1e-5, dynamic_img_size=True)
+            transform = create_transform(**resolve_data_config(model.pretrained_cfg, model=model))
+        elif version == "UNI2-h":
+            timm_kwargs = {
+                'img_size': 224, 
+                'patch_size': 14, 
+                'depth': 24,
+                'num_heads': 24,
+                'init_values': 1e-5, 
+                'embed_dim': 1536,
+                'mlp_ratio': 2.66667*2,
+                'num_classes': 0, 
+                'no_embed_class': True,
+                'mlp_layer': timm.layers.SwiGLUPacked, 
+                'act_layer': torch.nn.SiLU, 
+                'reg_tokens': 8, 
+                'dynamic_img_size': True
+                }
+            model = timm.create_model("hf-hub:MahmoodLab/UNI2-h", pretrained=True, **timm_kwargs)
+            transform = create_transform(**resolve_data_config(model.pretrained_cfg, model=model))
+    else:
+        print(f"Loading model from local path: {token}")
+        if version == "UNI":
+            model = timm.create_model(f'local-dir:{token}', pretrained=True, init_values=1e-5, dynamic_img_size=True)
+            transform = create_transform(**resolve_data_config(model.pretrained_cfg, model=model))
+        elif version == "UNI2-h":
+            timm_kwargs = {
+                'img_size': 224, 
+                'patch_size': 14, 
+                'depth': 24,
+                'num_heads': 24,
+                'init_values': 1e-5, 
+                'embed_dim': 1536,
+                'mlp_ratio': 2.66667*2,
+                'num_classes': 0, 
+                'no_embed_class': True,
+                'mlp_layer': timm.layers.SwiGLUPacked, 
+                'act_layer': torch.nn.SiLU, 
+                'reg_tokens': 8, 
+                'dynamic_img_size': True
+                }
+            # Not token is the local path to the model weights (.bin)
+            model = timm.create_model(f'local-dir:{token}', pretrained=True, **timm_kwargs)
+            transform = create_transform(**resolve_data_config(model.pretrained_cfg, model=model))
     print(f"Finished loading model: {version}")
     return model, transform
 

@@ -23,11 +23,12 @@ parser.add_argument('--patch_sizes', nargs='+', type=int, default=[3584, 896, 22
 parser.add_argument('--metadata_path', '-m', type=str, default='Sample_metadata.csv', help='Sample metadata CSV file name')
 parser.add_argument('--processed_data_path', '-d', type=str, default='processed_data', help='Processed data directory path')
 parser.add_argument('--plot', action='store_true', help='Plot intermediate results for checking')
-parser.add_argument('--token', '-t', type=str, default='', help='Hugging Face token')
+parser.add_argument('--token', '-t', type=str, default=None, help='Hugging Face token')
 parser.add_argument('--num_workers', type=int, default=4, help='Number of workers for data loading')
 parser.add_argument('--inference', action='store_true', help='Inference mode flag')
 parser.add_argument('--image_path', type=str, default='./wsis/', help='Data directory path')
 parser.add_argument('--seg_path', type=str, default='./wsis_segmentation/', help='Save directory path')
+parser.add_argument('--UNI_local_path', type=str, default=None, help='Path to the local UNI model folder')
 args = parser.parse_args()
 
 batch_size = args.batch_size # Choose 2048 or 4096 on A100, 256 or 512 on 2080Ti
@@ -40,7 +41,12 @@ inference_flag = args.inference
 ## Load the model and set the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Device: {device}")
-model, transform = get_UNI_model(args.token, "UNI2-h")
+if args.token is None:
+    if args.UNI_local_path is None:
+        raise ValueError("Either --token or --UNI_local_path must be provided.")
+    model, transform = get_UNI_model(args.UNI_local_path, "UNI2-h", from_local=True)
+else:
+    model, transform = get_UNI_model(args.token, "UNI2-h")
 model.to(device).eval()
 
 os.makedirs(f"{save_dir}", exist_ok=True)
