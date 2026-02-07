@@ -104,7 +104,7 @@ python -u $CODE_PATH/extract_features.py --inference -p $PROJECT_PATH -m Inferen
 Here [YOUR_LOCAL_UNI_PATH] should be the **absolute path** to your UNI model, for example `/home/UNI2-h`.
 
 #### 1.3 Predict gene expressions
-We provided AURORA prediction models for three cancer types: lung adenocarcinoma (LUAD), breast invasive carcinoma (BRCA), and kidney renal clear cell carcinoma (KIRC). You can download the checkpoints and model parameters at XXX and put them under your project folder (`PROJECT_PATH`). Then, specify model parameter file using `-j` and checkpoint file using `--model_pth`. The output folder can be set by `-t`.
+We provided AURORA prediction models for three cancer types: lung adenocarcinoma (LUAD), breast invasive carcinoma (BRCA), and kidney renal clear cell carcinoma (KIRC). You can download the checkpoints and model parameters at [Hugging Face](https://huggingface.co/datasets/AURORAData/AURORA_prediction) and put them under your project folder (`PROJECT_PATH`). Then, specify model parameter file using `-j` and checkpoint file using `--model_pth`. The output folder can be set by `-t`.
 ```
 python -u $CODE_PATH/predict.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred -j model_parameter_LUAD.json --model_pth AURORA_LUAD.pth --sample_sheet Inference_samples.csv --bulk TCGA_LUAD_expression.csv
 ```
