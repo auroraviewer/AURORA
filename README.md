@@ -164,7 +164,7 @@ python -u $CODE_PATH/run_HistoSweep.py -p $PROJECT_PATH -t AURORA_pred --sample_
 
 Then, you can visualize the iStar-enhanced predictions using HistoSweep mask by `--HistoSweep_mask`
 ```
-python -u $CODE_PATH/run_HistoSweep.py -p $PROJECT_PATH -t AURORA_pred --sample_sheet Inference_samples.csv --HistoSweep_mask
+python -u $CODE_PATH/plot.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --plot_dir AURORA_plots --samples TCGA-86-A4P8-01A-01-TSA --genes IL7R KRT8 --celltypes Malignant T_cell --resolution -1 --HistoSweep_mask
 ```
 
 ---
