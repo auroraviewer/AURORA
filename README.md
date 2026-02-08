@@ -110,9 +110,10 @@ python -u $CODE_PATH/predict.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pre
 ```
 
 The predicted gene expressions will be stored as `.pickle` files under `./AURORA_pred/pred`. In each file, the results are saved as a dictionary:
-    - `exp_pred`: gene expression predictions with shape (`#spots`, `#patch levels`, `#genes`), by default, the patch levels are [3584,896,224]. You can find this information from the `.json` file of the pretrained model (e.g. `model_parameter_LUAD.json`);
-    - `prop_pred`: cell type proportions in **log** scales with shape (`#spots`, `#patch levels`, `#cell types`);
-    - `patches_loc_before_pad`: coordinates of the top left corner of the patches on the rescaled H&E image (which is stored in `AURORA_interim/UNI_multiscale_patches/wsis_rescaled/`).
+
+- `exp_pred`: gene expression predictions with shape (`#spots`, `#patch levels`, `#genes`), by default, the patch levels are [3584,896,224]. You can find this information from the `.json` file of the pretrained model (e.g. `model_parameter_LUAD.json`);
+- `prop_pred`: cell type proportions in **log** scales with shape (`#spots`, `#patch levels`, `#cell types`);
+- `patches_loc_before_pad`: coordinates of the top left corner of the patches on the rescaled H&E image (which is stored in `AURORA_interim/UNI_multiscale_patches/wsis_rescaled/`).
 
 #### 1.4 Gene expression prediction enhancement
 We use [iStar](https://github.com/daviddaiweizhang/istar) to enhance the resolution of predicted gene expressions. Please use the version of iStar here, since some codes are modified to suit AURORA's data format.
