@@ -153,6 +153,20 @@ To visualize several genes and cell type proportions together, please use:
 python -u $CODE_PATH/plot.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --plot_dir AURORA_plots --samples TCGA-86-A4P8-01A-01-TSA --genes IL7R KRT8 --celltypes Malignant T_cell --resolution 224
 ```
 
+##### 1.5.1 Apply HistoSweep (Optional)
+
+For a better visualization of iStar-enhanced predictions, we recommend using [HistoSweep](https://github.com/amesch441-o1/HistoSweep) to retain only high-quality superpixels. Please make sure Step 1.4 has been executed before running the following code.
+```
+git clone https://github.com/amesch441-o1/HistoSweep.git
+export HISTOSWEEP_PATH=[YOUR_HistoSweep_PATH] #[YOUR_HistoSweep_PATH] is where you clone the repository
+python -u $CODE_PATH/run_HistoSweep.py -p $PROJECT_PATH -t AURORA_pred --sample_sheet Inference_samples.csv
+```
+
+Then, you can visualize the iStar-enhanced predictions using HistoSweep mask by `--HistoSweep_mask`
+```
+python -u $CODE_PATH/run_HistoSweep.py -p $PROJECT_PATH -t AURORA_pred --sample_sheet Inference_samples.csv --HistoSweep_mask
+```
+
 ---
 
 If you want to train your own AURORA model, please following the following steps.
