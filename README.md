@@ -130,6 +130,29 @@ python -u $CODE_PATH/run_istar.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_p
 
 The iStar-enhanced gene expression predictions will be under `./AURORA_pred/istar_pred`.
 
+#### 1.5 Visualization
+After prediction, we can visualize predicted gene expressions and cell type proportions using `plot.py`. For example, to visualize predicted gene expressions at 224 pixel * 224 pixel resolution, use the following command:
+```
+python -u $CODE_PATH/plot.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --plot_dir AURORA_plots --samples TCGA-86-A4P8-01A-01-TSA --genes IL7R KRT8 --resolution 224
+```
+
+The plots will be saved under `${PROJECT_PATH}/${AURORA_plots}`.
+
+For iStar-enhanced predictions, please set `--resolution -1`:
+```
+python -u $CODE_PATH/plot.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --plot_dir AURORA_plots --samples TCGA-86-A4P8-01A-01-TSA --genes IL7R KRT8 --resolution -1
+```
+
+We can also visualize predicted cell type proportions using
+```
+python -u $CODE_PATH/plot.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --plot_dir AURORA_plots --samples TCGA-86-A4P8-01A-01-TSA --celltypes Malignant T_cell --resolution 224
+```
+
+To visualize several genes and cell type proportions together, please use:
+```
+python -u $CODE_PATH/plot.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --plot_dir AURORA_plots --samples TCGA-86-A4P8-01A-01-TSA --genes IL7R KRT8 --celltypes Malignant T_cell --resolution 224
+```
+
 ---
 
 If you want to train your own AURORA model, please following the following steps.
