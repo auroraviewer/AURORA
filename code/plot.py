@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import os
-from tqdm import tqdm 
 import argparse
 import utils
 import matplotlib.pyplot as plt
@@ -35,6 +34,7 @@ parser.add_argument('--samples', '-s', type=str, nargs='+', default=None, help='
 parser.add_argument('--genes', '-g', type=str, nargs='+', default=None, help='List of gene names to plot or a CSV file containing gene names to plot in the first column')
 parser.add_argument('--celltypes', '-c', type=str, nargs='+', default=None, help='List of cell types to plot or a CSV file containing cell types to plot in the first column')
 parser.add_argument('--plot_dir', '-d', type=str, default='AURORA_plots', help='Directory to save plots')
+parser.add_argument('--HistoSweep_mask', action='store_true', help='Use HistoSweep mask to the plots')
 args = parser.parse_args()
 cmap = plt.get_cmap('turbo')
 
@@ -58,6 +58,12 @@ else:
 for sample in args.samples:
     os.makedirs(os.path.join(plot_dir, sample), exist_ok=True)
     image, mask = load_image(sample, f"{interim_dir}/UNI_multiscale_patches/wsis_rescaled/")
+    if args.HistoSweep_mask:
+        mask_path = os.path.join(main_dir, args.pred_path, 'istar_pred', sample, 'HistoSweep_Output', 'mask.png')
+        if os.path.exists(mask_path):
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        else:
+            print(f"HistoSweep mask not found for sample {sample}. Using default mask.")
     mask = cv2.resize(mask, (image.shape[1]//10,image.shape[0]//10))
     if args.resolution > 0:
         results = utils.load_pickle(os.path.join(pred_dir, 'pred', f"{sample}-pred.pickle"))
@@ -125,6 +131,13 @@ for sample in args.samples:
                 cv2.imwrite(f"{plot_dir}/{sample}/{sample}-{celltype}_proportion-{args.resolution}pixels.png", celltype_image)
     else:
         import pickle
+        mask = cv2.imread(f"{pred_dir}/istar_pred/{sample}/mask-small.png", cv2.IMREAD_GRAYSCALE)
+        if args.HistoSweep_mask:
+            mask_path = os.path.join(main_dir, args.pred_path, 'istar_pred', sample, 'HistoSweep_Output', 'mask.png')
+            if os.path.exists(mask_path):
+                mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            else:
+                print(f"HistoSweep mask not found for sample {sample}. Using default mask.")
         ## iStar-enhanced predictions
         if genes_to_plot is not None:
             for gene in genes_to_plot:
@@ -135,8 +148,8 @@ for sample in args.samples:
                 with open(istar_file, 'rb') as f:
                     istar_pred = pickle.load(f)
                 istar_pred = istar_pred/ istar_pred.max()  # Normalize the prediction to [0, 1]
-                # mask = cv2.imread(f"{main_dir}/TCGA_LUAD/istar_pred/{dataset}/HistoSweep_Output/mask-small.png", cv2.IMREAD_GRAYSCALE)
-                mask = cv2.imread(f"{pred_dir}/istar_pred/{sample}/mask-small.png", cv2.IMREAD_GRAYSCALE)
+                if mask.shape[0] != istar_pred.shape[1]:
+                    mask = cv2.resize(mask, (istar_pred.shape[1], istar_pred.shape[0]))
                 plot_image = np.zeros((istar_pred.shape[0], istar_pred.shape[1], 3))
                 for i in range(istar_pred.shape[0]):
                     for j in range(istar_pred.shape[1]):
@@ -159,7 +172,7 @@ for sample in args.samples:
             istar_celltype = np.array(istar_celltype)
             istar_celltype = istar_celltype.transpose((1, 2, 0))  # Shape: (,, num_cell_types)
             istar_celltype = istar_celltype / istar_celltype.sum(axis=2, keepdims=True)  # Normalize each cell type
-            mask = cv2.imread(f"{pred_dir}/istar_pred/{sample}/mask-small.png", cv2.IMREAD_GRAYSCALE)
+            mask = cv2.resize(mask, (istar_celltype.shape[1], istar_celltype.shape[0]))
             for celltype in celltypes_to_plot:
                 if celltype not in results['cell_types']:
                     print(f"Cell type {celltype} not found in the prediction results for sample {sample}. Skipping this cell type.")
