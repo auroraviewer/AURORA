@@ -31,6 +31,7 @@ parser.add_argument('--sample_sheet', type=str, default=None, help='Dataset dire
 parser.add_argument('--gene_list_file', type=str, default='AURORA_interim/Gene_to_predict.csv', help='Gene list file path')
 parser.add_argument('--celltype_file', type=str, default='AURORA_interim/deconvolution/cell_types.csv', help='Cell type list file path')
 parser.add_argument('--patch_size', type=int, default=224, help='Patch size for prediction')
+parser.add_argument('--epoch_istar', type=int, default=50, help='Epoch number for iStar')
 # parser.add_argument('--dataset', type=str, required=True, help='Dataset name')
 args = parser.parse_args()
 
@@ -84,4 +85,4 @@ for dataset in dataset_test:
     locs['y'] = locs['y'].astype(int)
     # save locs to tsv
     locs.to_csv(f"{main_dir}/{args.pred_path}/istar_pred/{dataset}/locs.tsv", sep="\t", index=True)
-    os.system(f"bash $CODE_PATH/run_istar_core.sh {main_dir}/{args.pred_path}/istar_pred/{dataset}/")
+    os.system(f"bash $CODE_PATH/run_istar_core.sh {main_dir}/{args.pred_path}/istar_pred/{dataset}/ {args.epoch_istar}")
