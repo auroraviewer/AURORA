@@ -124,6 +124,6 @@ for idx in range(idx_total):
             utils.save_pickle({'exp_pred':output,'prop_pred':major_prop_pred,
                             'patches_loc_before_pad':patches_loc_before_pad, 
                                'genes': gene_list, 'cell_types':major_cell_type,
-                              'resolution_levels': parameters['patch_size']},
+                              'resolutions': parameters['patch_size']},
                             f"{main_dir}/{args.pred_path}/pred/{dataset_test_use[index]}-pred.pickle")
 
