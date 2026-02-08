@@ -118,7 +118,7 @@ To download model weights for iStar, please following [istar/download_checkpoint
 **Note**: You can also use the checkpoints [here](https://github.com/mahmoodlab/HIPT/tree/master/HIPT_4K/Checkpoints).
 ```
 export ISTAR_PATH=$CODE_PATH/istar/
-python -u $CODE_PATH/run_istar.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --sample_sheet Inference_samples.csv --gene_list_file LUAD_gene.csv --celltype_file LUAD_cell_types.csv --patch_size 224
+python -u $CODE_PATH/run_istar.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --sample_sheet Inference_samples.csv --gene_list_file LUAD_gene.csv --celltype_file LUAD_cell_types.csv --patch_size 224 --epoch_istar 50
 ```
 
 The iStar-enhanced gene expression predictions will be under `./AURORA_pred/istar_pred`.
