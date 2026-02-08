@@ -128,9 +128,9 @@ def get_embeddings(img, pretrained=True, device='cuda'):
 
     model256_path, model4k_path = None, None
     if pretrained:
-        base_path_istar = os.getenv("ISTAR_PATH", None)
-        if base_path_istar is None:
-            raise ValueError("Environment variable ISTAR_PATH should be set.")
+        base_path_aurora = os.getenv("CODE_PATH")
+        base_path_istar = os.getenv("ISTAR_PATH", f"{CODE_PATH}/istar")
+        print(f"Fetching ViT checkpoints from {base_path_istar}")
         model256_path = f'{base_path_istar}/checkpoints/vit256_small_dino.pth'
         model4k_path = f'{base_path_istar}/checkpoints/vit4k_xs_dino.pth'
     model = HIPT_4K(
