@@ -122,6 +122,8 @@ for idx in range(idx_total):
             output = output.cpu().numpy()
             major_prop_pred = major_prop_pred.detach().cpu().numpy()
             utils.save_pickle({'exp_pred':output,'prop_pred':major_prop_pred,
-                            'patches_loc_before_pad':patches_loc_before_pad, 'genes': gene_list, 'cell_types':major_cell_type},
+                            'patches_loc_before_pad':patches_loc_before_pad, 
+                               'genes': gene_list, 'cell_types':major_cell_type,
+                              'resolution_level': parameters['patch_size']},
                             f"{main_dir}/{args.pred_path}/pred/{dataset_test_use[index]}-pred.pickle")
 
