@@ -122,6 +122,7 @@ The predicted gene expressions will be stored as `.pickle` files under `./AURORA
 We use [iStar](https://github.com/daviddaiweizhang/istar) to enhance the resolution of predicted gene expressions. Please use the version of iStar here, since some codes are modified to suit AURORA's data format.
 
 To download model weights for iStar, please following [istar/download_checkpoints.sh](code/istar/download_checkpoints.sh). The checkpoints should be put in `$CODE_PATH/istar/checkpoints`.
+
 **Note**: You can also use the checkpoints [here](https://github.com/mahmoodlab/HIPT/tree/master/HIPT_4K/Checkpoints).
 ```
 export ISTAR_PATH=$CODE_PATH/istar/
