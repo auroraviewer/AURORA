@@ -115,7 +115,8 @@ The predicted gene expressions will be stored as `.pickle` files under `./AURORA
 - `prop_pred`: cell type proportions in **log** scales with shape (`#spots`, `#patch levels`, `#cell types`);
 - `patches_loc_before_pad`: coordinates of the top left corner of the patches on the rescaled H&E image (which is stored in `AURORA_interim/UNI_multiscale_patches/wsis_rescaled/`);
 - `genes`: names of genes predicted, in the same order as the axis-2 (the last axis) of `exp_pred`;
-- `cell_types`: names of cell types predicted, in the same order as the axis-2 (the last axis) of `prop_pred`.
+- `cell_types`: names of cell types predicted, in the same order as the axis-2 (the last axis) of `prop_pred`;
+- `resolution_levels`: patch sizes.
 
 #### 1.4 Gene expression prediction enhancement
 We use [iStar](https://github.com/daviddaiweizhang/istar) to enhance the resolution of predicted gene expressions. Please use the version of iStar here, since some codes are modified to suit AURORA's data format.
