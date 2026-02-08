@@ -101,7 +101,7 @@ python -u $CODE_PATH/extract_features.py --inference -p $PROJECT_PATH -m Inferen
 python -u $CODE_PATH/extract_features.py --inference -p $PROJECT_PATH -m Inference_samples.csv -o AURORA_interim --image_path wsis --seg_path wsis_segmentation -b 128 --plot --UNI_local_path [YOUR_LOCAL_UNI_PATH]
 ```
 
-Here [YOUR_LOCAL_UNI_PATH] should be the **absolute path** to your UNI model, for example `/home/UNI2-h`.
+Here, [YOUR_LOCAL_UNI_PATH] should be the **absolute path** to your UNI model, for example `/home/UNI2-h`.
 
 #### 1.3 Predict gene expressions
 We provided AURORA prediction models for three cancer types: lung adenocarcinoma (LUAD), breast invasive carcinoma (BRCA), and kidney renal clear cell carcinoma (KIRC). You can download the checkpoints and model parameters at [Hugging Face](https://huggingface.co/datasets/AURORAData/AURORA_prediction) and put them under your project folder (`PROJECT_PATH`). Then, specify model parameter file using `-j` and checkpoint file using `--model_pth`. The output folder can be set by `-t`.
@@ -114,12 +114,14 @@ The predicted gene expressions will be under `./AURORA_pred/pred`.
 #### 1.4 Gene expression prediction enhancement
 We use [iStar](https://github.com/daviddaiweizhang/istar) to enhance the resolution of predicted gene expressions. Please use the version of iStar here, since some codes are modified to suit AURORA's data format.
 
-To download model weights for iStar, please following `istar/download_checkpoints.sh`.
-
+To download model weights for iStar, please following [istar/download_checkpoints.sh](code/istar/download_checkpoints.sh). The checkpoints should be put in `$CODE_PATH/istar/checkpoints`.
+**Note**: You can also use the checkpoints [here](https://github.com/mahmoodlab/HIPT/tree/master/HIPT_4K/Checkpoints).
 ```
 export ISTAR_PATH=$CODE_PATH/istar/
-python -u $CODE_PATH/run_istar.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --sample_sheet Inference_samples.csv --gene_list_file AURORA_interim/Gene_to_predict.csv --celltype_file AURORA_interim/deconvolution/cell_types.csv --patch_size 224
+python -u $CODE_PATH/run_istar.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --sample_sheet Inference_samples.csv --gene_list_file LUAD_gene.csv --celltype_file LUAD_cell_types.csv --patch_size 224
 ```
+
+The iStar-enhanced gene expression predictions will be under `./AURORA_pred/pred`.
 
 ---
 
