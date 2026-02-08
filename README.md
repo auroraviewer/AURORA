@@ -260,7 +260,7 @@ AURORA can also predict cell type proportions. To facilitate this, we use deconv
 
 The scRNA-seq reference should be stored in a `.RDS` file in [SeuratV5](https://satijalab.org/seurat/) format. The cell type annotation should be stored in `meta.data$cell_type`.
 ```
-Rscript $CODE_PATH/get_deconvolution.R -p $PROJECT_PATH -d processed_data -m Sample_metadata.csv -o AURORA_interim -r Kim2020_Lung.rds
+Rscript $CODE_PATH/get_deconvolution.R -p $PROJECT_PATH -d processed_data -m Sample_metadata.csv -o AURORA_interim -r Kim2020_Lung.rds --python_path [YOUR_PYTHON_PATH]
 ```
 **Note:** You can find the path to your `python` in your environment by
 ```
@@ -268,7 +268,7 @@ which python
 ```
 The result of this command should be used as value for `--python_path`.
 
-**Note:** You can also use other deconvolution methods. Please organize your deconvolution results as separate `.csv` files and put them under `AURORA_interim/deconvolution`. Each file should be names as `[sample_name]_prop.csv`, where sample_name should be the same as that in `Sample_metadata.csv`. The first column should the spot names and the rest of the columns each represents the proportion for one cell type.
+**Note:** You can also use other deconvolution methods. Please organize your deconvolution results as separate `.csv` files and put them under `AURORA_interim/deconvolution`. Each file should be names as `[sample_name]_prop.csv`, where `sample_name` should be the same as that in `Sample_metadata.csv`. The first column should the spot names and the rest of the columns each represents the proportion for one cell type.
 
 ### 4. Train AURORA model (training-only)
 To train AURORA, please provide a `.csv` file containing all the names of the sample used. You can use the `Sample_metadata.csv` generated in step 1.1. If this file contains multiple columns, please specify which column contains the sample names using `--train_sample_col` (by default, the first column).
