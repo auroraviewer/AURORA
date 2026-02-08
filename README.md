@@ -121,7 +121,7 @@ export ISTAR_PATH=$CODE_PATH/istar/
 python -u $CODE_PATH/run_istar.py -p $PROJECT_PATH -i AURORA_interim -t AURORA_pred --sample_sheet Inference_samples.csv --gene_list_file LUAD_gene.csv --celltype_file LUAD_cell_types.csv --patch_size 224
 ```
 
-The iStar-enhanced gene expression predictions will be under `./AURORA_pred/pred`.
+The iStar-enhanced gene expression predictions will be under `./AURORA_pred/istar_pred`.
 
 ---
 
