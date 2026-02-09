@@ -184,35 +184,30 @@ You can download example Visium samples from [10x Genomics](https://www.10xgenom
 An example `raw_data` looks like this:
 ```
 raw_data
-├── P2_LUAD
-│   ├── B_sample_4.19H06001-3.high.ADC.CytAssist.tif
+├── BRCA1
+│   ├── filtered_feature_bc_matrix.h5
+│   ├── V1_Breast_Cancer_Block_A_Section_1_image.tif
+│   ├── spatial
+│   │   ├── aligned_fiducials.jpg
+│   │   ├── detected_tissue_image.jpg
+│   │   ├── scalefactors_json.json
+│   │   ├── tissue_hires_image.png
+│   │   ├── tissue_lowres_image.png
+│   │   └── tissue_positions_list.csv
+│   └── ... (other files)
+└── BRCA2
 │   ├── filtered_feature_bc_matrix.h5
+│   ├── V1_Breast_Cancer_Block_A_Section_2_image.tif
 │   ├── spatial
-│   │   ├── aligned_fiducials.jpg
-│   │   ├── aligned_tissue_image.jpg
-│   │   ├── cytassist_image.tiff
-│   │   ├── detected_tissue_image.jpg
-│   │   ├── scalefactors_json.json
-│   │   ├── spatial_enrichment.csv
-│   │   ├── tissue_hires_image.png
-│   │   ├── tissue_lowres_image.png
-│   │   └── tissue_positions_list.csv
-│   └── ... (other files)
-├── P3_LUAD
-│   ├── filtered_feature_bc_matrix.h5
-│   ├── Sample_6.15H12199-5.ADC.CytAssist.tif
-│   ├── spatial
-│   │   ├── aligned_fiducials.jpg
-│   │   ├── aligned_tissue_image.jpg
-│   │   ├── cytassist_image.tiff
-│   │   ├── detected_tissue_image.jpg
-│   │   ├── scalefactors_json.json
-│   │   ├── spatial_enrichment.csv
-│   │   ├── tissue_hires_image.png
-│   │   ├── tissue_lowres_image.png
-│   │   └── tissue_positions_list.csv
+│   │   ├── aligned_fiducials.jpg
+│   │   ├── detected_tissue_image.jpg
+│   │   ├── scalefactors_json.json
+│   │   ├── tissue_hires_image.png
+│   │   ├── tissue_lowres_image.png
+│   │   └── tissue_positions_list.csv
 │   └── ... (other files)
 └── ... (other samples)
+
 ```
 #### 2.1 Generate a sample list
 Before preprocessing, we need a `.csv` file with three columns:
