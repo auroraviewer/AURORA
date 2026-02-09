@@ -80,20 +80,23 @@ celltype_path = f"{main_dir}/{parameters.get('celltype_file', "AURORA_interim/de
 ## Generate training and testing samples
 sample_col = args.train_sample_col
 dataset_train = pd.read_csv(train_samples_path).iloc[:,sample_col].values
-major_cell_type = pd.read_csv(celltype_path,header=None).values.squeeze()
+if pred_celltype:
+    major_cell_type = pd.read_csv(celltype_path,header=None).values.squeeze()
+else:
+    major_cell_type = []
 if set(list(dataset_train)) <= set(dataset_exist):
     print("Training samples loading from disk")
     train_data = load_data(list(dataset_train), gene_list, main_dir=main_dir, processed_data_dir=args.processed_data_path,
                             interim_dir=args.interim_path, train_dir=args.train_path,
                             bulk_hvg=hvg_list, bulk_norm_factor=bulk_norm_factor, 
-                            plot_mask=args.plot, patch_sizes=patch_sizes, cell_type_list=major_cell_type,
+                            plot_mask=args.plot, patch_sizes=patch_sizes, cell_type_list=major_cell_type,load_cell_type = pred_celltype,
                             from_file=True, file_dir=dataset_dir, num_workers=num_workers, pixel_size = pixel_size)
 else:
-    print("Training samples loading from scratch")
+    print("Training samples loading from sketch")
     train_data = load_data(list(dataset_train), gene_list, main_dir=main_dir, processed_data_dir=args.processed_data_path,
                             interim_dir=args.interim_path, train_dir=args.train_path,
                             bulk_hvg=hvg_list, bulk_norm_factor=bulk_norm_factor, 
-                            plot_mask=args.plot, patch_sizes=patch_sizes, cell_type_list=major_cell_type,
+                            plot_mask=args.plot, patch_sizes=patch_sizes, cell_type_list=major_cell_type,load_cell_type = pred_celltype,
                             from_file=False, file_dir=dataset_dir, num_workers=num_workers, pixel_size = pixel_size)
 train_dataset = HistologyGeneExpressionDataset(train_data,device=device)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=my_collate)

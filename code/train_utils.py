@@ -177,7 +177,7 @@ def masked_focal_kl_loss(log_pred, target_probs, gamma=2.0, mask_thresh=0.2):
 # Function to load embeddings and gene expression data
 def load_data(datasets, gene_list, main_dir, processed_data_dir,
               interim_dir, train_dir,
-              bulk_hvg, bulk_norm_factor, cell_type_list,
+              bulk_hvg, bulk_norm_factor, cell_type_list, load_cell_type = True,
               patch_sizes=[3584, 896, 224], plot_mask = True, 
               from_file = False, file_dir = None, num_workers=4,
               pixel_size=0.5):
@@ -201,7 +201,8 @@ def load_data(datasets, gene_list, main_dir, processed_data_dir,
             #! Notice that this the first column of loc is the col index for the image matrix, which is the x axis direction on the plot!
             spot_locs = np.load(locs_file)
             # Load cell type proportions
-            major_prop = pd.read_csv(f"{prop_folder}/{dataset}_prop.csv",index_col=0,header=0)
+            if load_cell_type:
+                major_prop = pd.read_csv(f"{prop_folder}/{dataset}_prop.csv",index_col=0,header=0)
             # Only keep spots used in cnts
             barcode_use = utils.load_pickle(f"{main_dir}/{interim_dir}/UNI_multiscale_patches/locs/{dataset}-bars.pickle")
             barcode_use = [code.decode('utf-8') for code in barcode_use.flatten()]
@@ -338,11 +339,14 @@ def load_data(datasets, gene_list, main_dir, processed_data_dir,
                     #     image_plot = cv2.resize(image_plot,(0,0),fx=0.1,fy=0.1)
                     #     cv2.imwrite(f"{main_dir}/{train_dir}/image_check/{dataset}_father_{patch_size}patch.png", image_plot)
             # For cells with no prop estimation, we set the prop to 0
-            major_prop = major_prop.loc[:,cell_type_list]
-            major_prop_filtered = np.zeros((len(barcode),len(cell_type_list)))
-            for i in range(len(barcode)):
-                if barcode[i] in major_prop.index:
-                    major_prop_filtered[i,:] = major_prop.loc[barcode[i],:].values
+            if load_cell_type:
+                major_prop = major_prop.loc[:,cell_type_list]
+                major_prop_filtered = np.zeros((len(barcode),len(cell_type_list)))
+                for i in range(len(barcode)):
+                    if barcode[i] in major_prop.index:
+                        major_prop_filtered[i,:] = major_prop.loc[barcode[i],:].values
+            else:
+                major_prop_filtered = -1
             # Load gene expression
             cnts_file = f"{cnt_folder}/{dataset}-cnts.tsv"
             cnts = utils.load_tsv(cnts_file)
