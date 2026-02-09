@@ -61,7 +61,7 @@ for dataset in dataset_test:
 
     result = utils.load_pickle(f"{main_dir}/{args.pred_path}/pred/{dataset}-pred.pickle")
     pred = result['exp_pred'][:,2,:].squeeze()
-    patch_loc_before_pad = result['patches_loc_before_pad'][args.patch_size][:,[1,0]]
+    patch_loc_before_pad = result['patches_loc_before_pad'][args.patch_size]#[:,[1,0]]
     patch_keep = np.logical_and(patch_loc_before_pad[:,0] > 0, patch_loc_before_pad[:,1] > 0)
     patch_keep = np.logical_and(patch_loc_before_pad[:,0] + 224 < image.shape[1], patch_keep)
     patch_keep = np.logical_and(patch_loc_before_pad[:,1] + 224 < image.shape[0], patch_keep)
