@@ -224,16 +224,16 @@ An example sample list can be found [here](/examples/Training_samples.csv).
 
 You can generate this sample list using the following script.
 ```
-python -u $CODE_PATH/generate_sample_list.py -p $PROJECT_PATH -r raw_data -o Sample_metadata.csv
+python -u $CODE_PATH/generate_sample_list.py -p $PROJECT_PATH -r raw_data -o Training_samples.csv
 ```
 
 #### 2.2 Preprocess data
 By default, we rescale all H&E images to 0.5 µm/pixel.
 ```
-python -u $CODE_PATH/HEST_preprocess.py -p $PROJECT_PATH -r raw_data -m Sample_metadata.csv -o processed_data
+python -u $CODE_PATH/HEST_preprocess.py -p $PROJECT_PATH -r raw_data -m Training_samples.csv -o processed_data
 ```
 
-After preprocessing, we recommend double checking the alignment results using figures generated under `processed_data/spatial_plots`. Please **remove** the samples whose H&E image cannot align with the spot coordinates from `Sample_metadata.csv`.
+After preprocessing, we recommend double checking the alignment results using figures generated under `processed_data/spatial_plots`. Please **remove** the samples whose H&E image cannot align with the spot coordinates from `Training_samples.csv`.
 
 ### 3. Prepare training samples (training-only)
 With all samples in HEST-1K data format. We now extract the image features and prepare expressions for model training.
@@ -241,23 +241,23 @@ With all samples in HEST-1K data format. We now extract the image features and p
 #### 3.1 H&E feature extraction
 First, we rescale H&E images to the same resolution (by default, 0.5 µm/pixel). Then, we extract image features for patches at multiple resolution (by default 3584 * 3584 pixels, 896 * 896 pixels, 224 * 224 pixels).
 ```
-python -u $CODE_PATH/rescale.py -p $PROJECT_PATH -d processed_data -m Sample_metadata.csv -o AURORA_interim --plot
+python -u $CODE_PATH/rescale.py -p $PROJECT_PATH -d processed_data -m Training_samples.csv -o AURORA_interim --plot
 ```
 
 Then, we use [UNI-2h](https://github.com/mahmoodlab/UNI) to extract image features. Please first create a token on huggingface following this [tutorial](https://huggingface.co/datasets/MahmoodLab/hest). 
 ```
-python -u $CODE_PATH/extract_features.py -p $PROJECT_PATH -d processed_data -m Sample_metadata.csv -o AURORA_interim -b 128 --plot --token [YOUR_HF_TOKEN]
+python -u $CODE_PATH/extract_features.py -p $PROJECT_PATH -d processed_data -m Training_samples.csv -o AURORA_interim -b 128 --plot --token [YOUR_HF_TOKEN]
 ```
 **Note:** Please pass your token to `extract_features` using argument `--token`.
 
 **Note**: To load UNI2-h from local, please first clone [UNI2-h](https://huggingface.co/MahmoodLab/UNI2-h) to your local machine following the instructions [here](https://huggingface.co/MahmoodLab/UNI2-h/tree/main?clone=true). Then use the following code to extract image features:
 ```
-python -u $CODE_PATH/extract_features.py -p $PROJECT_PATH -d processed_data -m Sample_metadata.csv -o AURORA_interim -b 128 --plot --UNI_local_path [YOUR_LOCAL_UNI_PATH]
+python -u $CODE_PATH/extract_features.py -p $PROJECT_PATH -d processed_data -m Training_samples.csv -o AURORA_interim -b 128 --plot --UNI_local_path [YOUR_LOCAL_UNI_PATH]
 ```
 
 #### 3.2 Prepare ST expressions
 ```
-python -u $CODE_PATH/prepare_st.py -p $PROJECT_PATH -d processed_data -m Sample_metadata.csv -o AURORA_interim
+python -u $CODE_PATH/prepare_st.py -p $PROJECT_PATH -d processed_data -m Training_samples.csv -o AURORA_interim
 ```
 **Note:** By default, AURORA only predicts protein coding genes. We rely on the gene annotation from TCGA to select those genes. You can download this annotation from `example` folder (`TCGA_genetype`).
 
@@ -266,7 +266,7 @@ AURORA can also predict cell type proportions. To facilitate this, we use deconv
 
 The scRNA-seq reference should be stored in a `.RDS` file in [SeuratV5](https://satijalab.org/seurat/) format. The cell type annotation should be stored in `meta.data$cell_type`.
 ```
-Rscript $CODE_PATH/get_deconvolution.R -p $PROJECT_PATH -d processed_data -m Sample_metadata.csv -o AURORA_interim -r Kim2020_Lung.rds --python_path [YOUR_PYTHON_PATH]
+Rscript $CODE_PATH/get_deconvolution.R -p $PROJECT_PATH -d processed_data -m Training_samples.csv -o AURORA_interim -r Kim2020_Lung.rds --python_path [YOUR_PYTHON_PATH]
 ```
 **Note:** You can find the path to your `python` in your environment by
 ```
@@ -274,14 +274,14 @@ which python
 ```
 The result of this command should be used as value for `--python_path`.
 
-**Note:** You can also use other deconvolution methods. Please organize your deconvolution results as separate `.csv` files and put them under `AURORA_interim/deconvolution`. Each file should be names as `[sample_name]_prop.csv`, where `sample_name` should be the same as that in `Sample_metadata.csv`. The first column should the spot names and the rest of the columns each represents the proportion for one cell type.
+**Note:** You can also use other deconvolution methods. Please organize your deconvolution results as separate `.csv` files and put them under `AURORA_interim/deconvolution`. Each file should be names as `[sample_name]_prop.csv`, where `sample_name` should be the same as that in `Training_samples.csv`. The first column should the spot names and the rest of the columns each represents the proportion for one cell type.
 
 ### 4. Train AURORA model (training-only)
-To train AURORA, please provide a `.csv` file containing all the names of the sample used. You can use the `Sample_metadata.csv` generated in step 1.1. If this file contains multiple columns, please specify which column contains the sample names using `--train_sample_col` (by default, the first column).
+To train AURORA, please provide a `.csv` file containing all the names of the sample used. You can use the `Training_samples.csv` generated in step 1.1. If this file contains multiple columns, please specify which column contains the sample names using `--train_sample_col` (by default, the first column).
 
 AURORA model requires a `.json` file to specify its parameters. An example can be found at `example/model_parameter.json`.
 ```
-python -u $CODE_PATH/train.py -p $PROJECT_PATH -d processed_data -i AURORA_interim -t AURORA_output -j model_parameter.json --train_samples Sample_metadata.csv --train_sample_col 0 --plot --log 
+python -u $CODE_PATH/train.py -p $PROJECT_PATH -d processed_data -i AURORA_interim -t AURORA_output -j model_parameter.json --train_samples Training_samples.csv --train_sample_col 0 --plot --log 
 ```
 **Note:** If you want to do prediction using this trained model, please following Step 1 and replace the `-j` and `--model_pth` parameter with the ones you used in your training.
 
@@ -293,5 +293,5 @@ python -u $CODE_PATH/test.py -p $PROJECT_PATH -d processed_data -i AURORA_interi
 ### 5. Finetune AURORA to predict more genes (training-only)
 AURORA also supports predict more gene other than the genes used in training, such as tertiary lymphoid structures marker genes. To achieve, please put the genes to predict in a `.csv` file with only one column (`example/finetune_gene`) and run the following code: 
 ```
-python -u $CODE_PATH/finetune.py -p $PROJECT_PATH -d processed_data -i AURORA_interim -t AURORA_output -j model_parameter.json --train_samples Sample_metadata.csv --train_sample_col 0 --model_pth AURORA_model_weights.pth --finetune_gene_list finetune_gene.csv --num_epochs 200 --plot --log 
+python -u $CODE_PATH/finetune.py -p $PROJECT_PATH -d processed_data -i AURORA_interim -t AURORA_output -j model_parameter.json --train_samples Training_samples.csv --train_sample_col 0 --model_pth AURORA_model_weights.pth --finetune_gene_list finetune_gene.csv --num_epochs 200 --plot --log 
 ```
