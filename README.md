@@ -250,6 +250,11 @@ python -u $CODE_PATH/extract_features.py -p $PROJECT_PATH -d processed_data -m S
 ```
 **Note:** Please pass your token to `extract_features` using argument `--token`.
 
+**Note**: To load UNI2-h from local, please first clone [UNI2-h](https://huggingface.co/MahmoodLab/UNI2-h) to your local machine following the instructions [here](https://huggingface.co/MahmoodLab/UNI2-h/tree/main?clone=true). Then use the following code to extract image features:
+```
+python -u $CODE_PATH/extract_features.py --inference -p $PROJECT_PATH -m Inference_samples.csv -o AURORA_interim --image_path wsis --seg_path wsis_segmentation -b 128 --plot --UNI_local_path [YOUR_LOCAL_UNI_PATH]
+```
+
 #### 3.2 Prepare ST expressions
 ```
 python -u $CODE_PATH/prepare_st.py -p $PROJECT_PATH -d processed_data -m Sample_metadata.csv -o AURORA_interim
