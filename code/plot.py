@@ -46,11 +46,11 @@ os.makedirs(plot_dir, exist_ok=True)
 if args.genes is None and args.celltypes is None:
     raise ValueError("Please specify at least one of --genes or --celltypes to plot.")
 else:
-    if '.csv' in args.genes:
+    if '.csv' in args.genes and args.genes is not None:
         genes_to_plot = pd.read_csv(args.genes).values.squeeze().tolist()
     else:
         genes_to_plot = args.genes
-    if '.csv' in args.celltypes:
+    if '.csv' in args.celltypes and args.celltypes is not None:
         celltypes_to_plot = pd.read_csv(args.celltypes).values.squeeze().tolist()
     else:
         celltypes_to_plot = args.celltypes
@@ -186,6 +186,7 @@ for sample in args.samples:
                 plot_image = plot_image.astype(np.uint8)
                 plot_image[mask==0,:] = 0
                 cv2.imwrite(f"{plot_dir}/{sample}/{sample}-{celltype}_proportion-iStar-enhanced.png", plot_image)
+
 
 
 
