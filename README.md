@@ -1,4 +1,4 @@
-# AURORA：Architecture Unveiling through RNA Omics and Routine Histology Analysis
+# AURORA: Architecture Unveiling through RNA Omics and Routine Histology Analysis
 
 ## Installation
 
