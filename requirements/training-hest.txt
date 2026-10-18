@@ -1,0 +1,19 @@
+# GENERATED FILE -- do not edit by hand.
+# Source of truth: aurora/deps.py  (regenerate with: python tools/sync_requirements.py)
+#
+# Group: hest
+# Purpose: preprocess raw Visium data into HEST-1K format (training only)
+#
+# Install with:
+#   pip install -r requirements/training-hest.txt
+-r training.txt
+
+pyvips  # A Python binding -- also needs the native libvips library.
+
+# HEST is not on PyPI. Install it from source:
+#   git clone https://github.com/mahmoodlab/HEST.git
+#   pip install -e HEST
+# 'pyvips' is only a binding: it also needs the native libvips library.
+#   conda install -c conda-forge pyvips   (installs the library too)
+#   apt-get install libvips-dev           (Debian/Ubuntu)
+#   brew install vips                     (macOS)

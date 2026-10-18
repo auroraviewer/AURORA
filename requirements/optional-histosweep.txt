@@ -1,0 +1,15 @@
+# GENERATED FILE -- do not edit by hand.
+# Source of truth: aurora/deps.py  (regenerate with: python tools/sync_requirements.py)
+#
+# Group: histosweep
+# Purpose: HistoSweep tissue-quality masking before the high-resolution stage
+#
+# Install with:
+#   pip install -r requirements/optional-histosweep.txt
+-r inference.txt
+
+
+# HistoSweep ships inside this repository at code/HistoSweep, so there is
+# nothing to clone; pass --histosweep-path only to use a different checkout.
+# The stage sweeps the rescaled H&E image and writes a tissue mask that
+# predict_highres applies, so it is part of the default inference chain.

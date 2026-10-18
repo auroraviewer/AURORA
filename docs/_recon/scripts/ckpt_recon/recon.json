@@ -1,0 +1,1844 @@
+{
+ "AURORA_LUAD_V2.pth": {
+  "path": "C:\\Edward_Chen\\appeal\\AURORA-main\\trained_model\\AURORA_LUAD_V2.pth",
+  "entries": [
+   {
+    "name": "AURORA_model_weights_smooth/data.pkl",
+    "size": 2280,
+    "compressed": 2280,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/byteorder",
+    "size": 6,
+    "compressed": 6,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/0",
+    "size": 3074048,
+    "compressed": 3074048,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/1",
+    "size": 1024,
+    "compressed": 1024,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/10",
+    "size": 256,
+    "compressed": 256,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/11",
+    "size": 8192,
+    "compressed": 8192,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/12",
+    "size": 128,
+    "compressed": 128,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/13",
+    "size": 1280,
+    "compressed": 1280,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/14",
+    "size": 40,
+    "compressed": 40,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/2",
+    "size": 7348224,
+    "compressed": 7348224,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/3",
+    "size": 131072,
+    "compressed": 131072,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/4",
+    "size": 512,
+    "compressed": 512,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/5",
+    "size": 131072,
+    "compressed": 131072,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/6",
+    "size": 1024,
+    "compressed": 1024,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/7",
+    "size": 3074048,
+    "compressed": 3074048,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/8",
+    "size": 12008,
+    "compressed": 12008,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/data/9",
+    "size": 65536,
+    "compressed": 65536,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/version",
+    "size": 2,
+    "compressed": 2,
+    "method": 0
+   },
+   {
+    "name": "AURORA_model_weights_smooth/.data/serialization_id",
+    "size": 40,
+    "compressed": 40,
+    "method": 0
+   }
+  ],
+  "root": null,
+  "root_type": "OrderedDict",
+  "keys": [
+   "bulk_encoder.0.weight",
+   "bulk_encoder.0.bias",
+   "lstm.weight_ih_l0",
+   "lstm.weight_hh_l0",
+   "lstm.bias_ih_l0",
+   "lstm.bias_hh_l0",
+   "decoder.0.weight",
+   "decoder.0.bias",
+   "decoder.2.weight",
+   "decoder.2.bias",
+   "decoder.4.weight",
+   "decoder.4.bias",
+   "celltype_decoder.0.weight",
+   "celltype_decoder.0.bias",
+   "celltype_decoder.2.weight",
+   "celltype_decoder.2.bias",
+   "celltype_decoder.4.weight",
+   "celltype_decoder.4.bias"
+  ],
+  "records": [
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     256,
+     3002
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     3002,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 768512,
+    "key": "bulk_encoder.0.weight",
+    "bytes": 3074048
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 256,
+    "key": "bulk_encoder.0.bias",
+    "bytes": 1024
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     1024,
+     1536
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1536,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 1572864,
+    "key": "lstm.weight_ih_l0",
+    "bytes": 6291456
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     1024,
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     256,
+     1
+    ],
+    "storage_offset": 1572864,
+    "children": null,
+    "numel": 262144,
+    "key": "lstm.weight_hh_l0",
+    "bytes": 1048576
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     1024
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 1835008,
+    "children": null,
+    "numel": 1024,
+    "key": "lstm.bias_ih_l0",
+    "bytes": 4096
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     1024
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 1836032,
+    "children": null,
+    "numel": 1024,
+    "key": "lstm.bias_hh_l0",
+    "bytes": 4096
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     128,
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     256,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 32768,
+    "key": "decoder.0.weight",
+    "bytes": 131072
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     128
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 128,
+    "key": "decoder.0.bias",
+    "bytes": 512
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     256,
+     128
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     128,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 32768,
+    "key": "decoder.2.weight",
+    "bytes": 131072
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 256,
+    "key": "decoder.2.bias",
+    "bytes": 1024
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     3002,
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     256,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 768512,
+    "key": "decoder.4.weight",
+    "bytes": 3074048
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     3002
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 3002,
+    "key": "decoder.4.bias",
+    "bytes": 12008
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     64,
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     256,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 16384,
+    "key": "celltype_decoder.0.weight",
+    "bytes": 65536
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     64
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 64,
+    "key": "celltype_decoder.0.bias",
+    "bytes": 256
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     32,
+     64
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     64,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 2048,
+    "key": "celltype_decoder.2.weight",
+    "bytes": 8192
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     32
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 32,
+    "key": "celltype_decoder.2.bias",
+    "bytes": 128
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     10,
+     32
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     32,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 320,
+    "key": "celltype_decoder.4.weight",
+    "bytes": 1280
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     10
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 10,
+    "key": "celltype_decoder.4.bias",
+    "bytes": 40
+   }
+  ],
+  "opcode": {
+   "error": null,
+   "opcodes": {
+    "PROTO": 1,
+    "GLOBAL": 3,
+    "BINPUT": 206,
+    "EMPTY_TUPLE": 20,
+    "REDUCE": 38,
+    "MARK": 38,
+    "BINUNICODE": 73,
+    "BININT": 9,
+    "TUPLE": 36,
+    "BINPERSID": 18,
+    "BININT1": 70,
+    "BININT2": 30,
+    "TUPLE2": 18,
+    "NEWFALSE": 18,
+    "BINGET": 91,
+    "TUPLE1": 18,
+    "SETITEMS": 2,
+    "EMPTY_DICT": 20,
+    "SETITEM": 20,
+    "BUILD": 1,
+    "STOP": 1
+   },
+   "globals": {
+    "collections OrderedDict": 1,
+    "torch._utils _rebuild_tensor_v2": 1,
+    "torch FloatStorage": 1
+   },
+   "n_persid": 18,
+   "n_distinct_strings": 56,
+   "strings_sample": [
+    "",
+    "0",
+    "1",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "_metadata",
+    "bulk_encoder",
+    "bulk_encoder.0",
+    "bulk_encoder.0.bias",
+    "bulk_encoder.0.weight",
+    "bulk_encoder.1",
+    "celltype_decoder",
+    "celltype_decoder.0",
+    "celltype_decoder.0.bias",
+    "celltype_decoder.0.weight",
+    "celltype_decoder.1",
+    "celltype_decoder.2",
+    "celltype_decoder.2.bias",
+    "celltype_decoder.2.weight",
+    "celltype_decoder.3",
+    "celltype_decoder.4",
+    "celltype_decoder.4.bias",
+    "celltype_decoder.4.weight",
+    "celltype_decoder.5",
+    "cuda:0",
+    "decoder",
+    "decoder.0",
+    "decoder.0.bias",
+    "decoder.0.weight",
+    "decoder.1",
+    "decoder.2",
+    "decoder.2.bias",
+    "decoder.2.weight",
+    "decoder.3",
+    "decoder.4",
+    "decoder.4.bias",
+    "decoder.4.weight",
+    "decoder.5",
+    "lstm",
+    "lstm.bias_hh_l0",
+    "lstm.bias_ih_l0",
+    "lstm.weight_hh_l0",
+    "lstm.weight_ih_l0",
+    "storage",
+    "version"
+   ]
+  },
+  "persistent": [
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "0",
+     "cuda:0",
+     "768512"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "0",
+    "location": "cuda:0",
+    "numel": 768512,
+    "dtype": "torch.float32",
+    "bytes": 3074048
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "1",
+     "cuda:0",
+     "256"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "1",
+    "location": "cuda:0",
+    "numel": 256,
+    "dtype": "torch.float32",
+    "bytes": 1024
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "2",
+     "cuda:0",
+     "1837056"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "2",
+    "location": "cuda:0",
+    "numel": 1837056,
+    "dtype": "torch.float32",
+    "bytes": 7348224
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "2",
+     "cuda:0",
+     "1837056"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "2",
+    "location": "cuda:0",
+    "numel": 1837056,
+    "dtype": "torch.float32",
+    "bytes": 7348224
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "2",
+     "cuda:0",
+     "1837056"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "2",
+    "location": "cuda:0",
+    "numel": 1837056,
+    "dtype": "torch.float32",
+    "bytes": 7348224
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "2",
+     "cuda:0",
+     "1837056"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "2",
+    "location": "cuda:0",
+    "numel": 1837056,
+    "dtype": "torch.float32",
+    "bytes": 7348224
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "3",
+     "cuda:0",
+     "32768"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "3",
+    "location": "cuda:0",
+    "numel": 32768,
+    "dtype": "torch.float32",
+    "bytes": 131072
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "4",
+     "cuda:0",
+     "128"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "4",
+    "location": "cuda:0",
+    "numel": 128,
+    "dtype": "torch.float32",
+    "bytes": 512
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "5",
+     "cuda:0",
+     "32768"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "5",
+    "location": "cuda:0",
+    "numel": 32768,
+    "dtype": "torch.float32",
+    "bytes": 131072
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "6",
+     "cuda:0",
+     "256"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "6",
+    "location": "cuda:0",
+    "numel": 256,
+    "dtype": "torch.float32",
+    "bytes": 1024
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "7",
+     "cuda:0",
+     "768512"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "7",
+    "location": "cuda:0",
+    "numel": 768512,
+    "dtype": "torch.float32",
+    "bytes": 3074048
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "8",
+     "cuda:0",
+     "3002"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "8",
+    "location": "cuda:0",
+    "numel": 3002,
+    "dtype": "torch.float32",
+    "bytes": 12008
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "9",
+     "cuda:0",
+     "16384"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "9",
+    "location": "cuda:0",
+    "numel": 16384,
+    "dtype": "torch.float32",
+    "bytes": 65536
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "10",
+     "cuda:0",
+     "64"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "10",
+    "location": "cuda:0",
+    "numel": 64,
+    "dtype": "torch.float32",
+    "bytes": 256
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "11",
+     "cuda:0",
+     "2048"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "11",
+    "location": "cuda:0",
+    "numel": 2048,
+    "dtype": "torch.float32",
+    "bytes": 8192
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "12",
+     "cuda:0",
+     "32"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "12",
+    "location": "cuda:0",
+    "numel": 32,
+    "dtype": "torch.float32",
+    "bytes": 128
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "13",
+     "cuda:0",
+     "320"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "13",
+    "location": "cuda:0",
+    "numel": 320,
+    "dtype": "torch.float32",
+    "bytes": 1280
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "14",
+     "cuda:0",
+     "10"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "14",
+    "location": "cuda:0",
+    "numel": 10,
+    "dtype": "torch.float32",
+    "bytes": 40
+   }
+  ],
+  "notes": [
+   "AURORA_model_weights_smooth/byteorder = 'little'",
+   "AURORA_model_weights_smooth/version = '3\\n'"
+  ],
+  "size_on_disk": 13854757,
+  "zip_total_uncompressed": 13850792,
+  "data_pkl_entry": "AURORA_model_weights_smooth/data.pkl",
+  "data_pkl_bytes": 2280,
+  "modules": {
+   "collections": 1,
+   "torch._utils": 1,
+   "torch": 1
+  },
+  "globals": {
+   "collections.OrderedDict": 1,
+   "torch._utils._rebuild_tensor_v2": 1,
+   "torch.FloatStorage": 1
+  },
+  "root_is_dict": true,
+  "root_keys": [
+   "bulk_encoder.0.weight",
+   "bulk_encoder.0.bias",
+   "lstm.weight_ih_l0",
+   "lstm.weight_hh_l0",
+   "lstm.bias_ih_l0",
+   "lstm.bias_hh_l0",
+   "decoder.0.weight",
+   "decoder.0.bias",
+   "decoder.2.weight",
+   "decoder.2.bias",
+   "decoder.4.weight",
+   "decoder.4.bias",
+   "celltype_decoder.0.weight",
+   "celltype_decoder.0.bias",
+   "celltype_decoder.2.weight",
+   "celltype_decoder.2.bias",
+   "celltype_decoder.4.weight",
+   "celltype_decoder.4.bias"
+  ],
+  "unique_storages": 15,
+  "storage_key_map": {
+   "0": [
+    "bulk_encoder.0.weight"
+   ],
+   "1": [
+    "bulk_encoder.0.bias"
+   ],
+   "2": [
+    "lstm.weight_ih_l0",
+    "lstm.weight_hh_l0",
+    "lstm.bias_ih_l0",
+    "lstm.bias_hh_l0"
+   ],
+   "3": [
+    "decoder.0.weight"
+   ],
+   "4": [
+    "decoder.0.bias"
+   ],
+   "5": [
+    "decoder.2.weight"
+   ],
+   "6": [
+    "decoder.2.bias"
+   ],
+   "7": [
+    "decoder.4.weight"
+   ],
+   "8": [
+    "decoder.4.bias"
+   ],
+   "9": [
+    "celltype_decoder.0.weight"
+   ],
+   "10": [
+    "celltype_decoder.0.bias"
+   ],
+   "11": [
+    "celltype_decoder.2.weight"
+   ],
+   "12": [
+    "celltype_decoder.2.bias"
+   ],
+   "13": [
+    "celltype_decoder.4.weight"
+   ],
+   "14": [
+    "celltype_decoder.4.bias"
+   ]
+  },
+  "total_storage_bytes": 13848464
+ },
+ "AURORA_highres_model_weights.pth": {
+  "path": "C:\\Edward_Chen\\appeal\\AURORA-main\\trained_model\\AURORA_highres_model_weights.pth",
+  "entries": [
+   {
+    "name": "AURORA_highres_model_weights/data.pkl",
+    "size": 2280,
+    "compressed": 2280,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/byteorder",
+    "size": 6,
+    "compressed": 6,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/0",
+    "size": 3074048,
+    "compressed": 3074048,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/1",
+    "size": 1024,
+    "compressed": 1024,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/10",
+    "size": 256,
+    "compressed": 256,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/11",
+    "size": 8192,
+    "compressed": 8192,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/12",
+    "size": 128,
+    "compressed": 128,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/13",
+    "size": 1280,
+    "compressed": 1280,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/14",
+    "size": 40,
+    "compressed": 40,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/2",
+    "size": 13639680,
+    "compressed": 13639680,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/3",
+    "size": 131072,
+    "compressed": 131072,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/4",
+    "size": 512,
+    "compressed": 512,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/5",
+    "size": 131072,
+    "compressed": 131072,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/6",
+    "size": 1024,
+    "compressed": 1024,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/7",
+    "size": 3074048,
+    "compressed": 3074048,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/8",
+    "size": 12008,
+    "compressed": 12008,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/data/9",
+    "size": 65536,
+    "compressed": 65536,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/version",
+    "size": 2,
+    "compressed": 2,
+    "method": 0
+   },
+   {
+    "name": "AURORA_highres_model_weights/.data/serialization_id",
+    "size": 40,
+    "compressed": 40,
+    "method": 0
+   }
+  ],
+  "root": null,
+  "root_type": "OrderedDict",
+  "keys": [
+   "bulk_encoder.0.weight",
+   "bulk_encoder.0.bias",
+   "lstm.weight_ih_l0",
+   "lstm.weight_hh_l0",
+   "lstm.bias_ih_l0",
+   "lstm.bias_hh_l0",
+   "decoder.0.weight",
+   "decoder.0.bias",
+   "decoder.2.weight",
+   "decoder.2.bias",
+   "decoder.4.weight",
+   "decoder.4.bias",
+   "celltype_decoder.0.weight",
+   "celltype_decoder.0.bias",
+   "celltype_decoder.2.weight",
+   "celltype_decoder.2.bias",
+   "celltype_decoder.4.weight",
+   "celltype_decoder.4.bias"
+  ],
+  "records": [
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     256,
+     3002
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     3002,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 768512,
+    "key": "bulk_encoder.0.weight",
+    "bytes": 3074048
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 256,
+    "key": "bulk_encoder.0.bias",
+    "bytes": 1024
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     1024,
+     3072
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     3072,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 3145728,
+    "key": "lstm.weight_ih_l0",
+    "bytes": 12582912
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     1024,
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     256,
+     1
+    ],
+    "storage_offset": 3145728,
+    "children": null,
+    "numel": 262144,
+    "key": "lstm.weight_hh_l0",
+    "bytes": 1048576
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     1024
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 3407872,
+    "children": null,
+    "numel": 1024,
+    "key": "lstm.bias_ih_l0",
+    "bytes": 4096
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     1024
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 3408896,
+    "children": null,
+    "numel": 1024,
+    "key": "lstm.bias_hh_l0",
+    "bytes": 4096
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     128,
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     256,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 32768,
+    "key": "decoder.0.weight",
+    "bytes": 131072
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     128
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 128,
+    "key": "decoder.0.bias",
+    "bytes": 512
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     256,
+     128
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     128,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 32768,
+    "key": "decoder.2.weight",
+    "bytes": 131072
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 256,
+    "key": "decoder.2.bias",
+    "bytes": 1024
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     3002,
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     256,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 768512,
+    "key": "decoder.4.weight",
+    "bytes": 3074048
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     3002
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 3002,
+    "key": "decoder.4.bias",
+    "bytes": 12008
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     64,
+     256
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     256,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 16384,
+    "key": "celltype_decoder.0.weight",
+    "bytes": 65536
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     64
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 64,
+    "key": "celltype_decoder.0.bias",
+    "bytes": 256
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     32,
+     64
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     64,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 2048,
+    "key": "celltype_decoder.2.weight",
+    "bytes": 8192
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     32
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 32,
+    "key": "celltype_decoder.2.bias",
+    "bytes": 128
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     10,
+     32
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     32,
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 320,
+    "key": "celltype_decoder.4.weight",
+    "bytes": 1280
+   },
+   {
+    "kind": "torch._utils._rebuild_tensor_v2",
+    "shape": [
+     10
+    ],
+    "dtype": "torch.float32",
+    "storage": "<Stub torch.storage.Stub_torch_FloatStorage args=1>",
+    "requires_grad": false,
+    "stride": [
+     1
+    ],
+    "storage_offset": 0,
+    "children": null,
+    "numel": 10,
+    "key": "celltype_decoder.4.bias",
+    "bytes": 40
+   }
+  ],
+  "opcode": {
+   "error": null,
+   "opcodes": {
+    "PROTO": 1,
+    "GLOBAL": 3,
+    "BINPUT": 206,
+    "EMPTY_TUPLE": 20,
+    "REDUCE": 38,
+    "MARK": 38,
+    "BINUNICODE": 73,
+    "BININT": 9,
+    "TUPLE": 36,
+    "BINPERSID": 18,
+    "BININT1": 70,
+    "BININT2": 30,
+    "TUPLE2": 18,
+    "NEWFALSE": 18,
+    "BINGET": 91,
+    "TUPLE1": 18,
+    "SETITEMS": 2,
+    "EMPTY_DICT": 20,
+    "SETITEM": 20,
+    "BUILD": 1,
+    "STOP": 1
+   },
+   "globals": {
+    "collections OrderedDict": 1,
+    "torch._utils _rebuild_tensor_v2": 1,
+    "torch FloatStorage": 1
+   },
+   "n_persid": 18,
+   "n_distinct_strings": 56,
+   "strings_sample": [
+    "",
+    "0",
+    "1",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "_metadata",
+    "bulk_encoder",
+    "bulk_encoder.0",
+    "bulk_encoder.0.bias",
+    "bulk_encoder.0.weight",
+    "bulk_encoder.1",
+    "celltype_decoder",
+    "celltype_decoder.0",
+    "celltype_decoder.0.bias",
+    "celltype_decoder.0.weight",
+    "celltype_decoder.1",
+    "celltype_decoder.2",
+    "celltype_decoder.2.bias",
+    "celltype_decoder.2.weight",
+    "celltype_decoder.3",
+    "celltype_decoder.4",
+    "celltype_decoder.4.bias",
+    "celltype_decoder.4.weight",
+    "celltype_decoder.5",
+    "cuda:0",
+    "decoder",
+    "decoder.0",
+    "decoder.0.bias",
+    "decoder.0.weight",
+    "decoder.1",
+    "decoder.2",
+    "decoder.2.bias",
+    "decoder.2.weight",
+    "decoder.3",
+    "decoder.4",
+    "decoder.4.bias",
+    "decoder.4.weight",
+    "decoder.5",
+    "lstm",
+    "lstm.bias_hh_l0",
+    "lstm.bias_ih_l0",
+    "lstm.weight_hh_l0",
+    "lstm.weight_ih_l0",
+    "storage",
+    "version"
+   ]
+  },
+  "persistent": [
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "0",
+     "cuda:0",
+     "768512"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "0",
+    "location": "cuda:0",
+    "numel": 768512,
+    "dtype": "torch.float32",
+    "bytes": 3074048
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "1",
+     "cuda:0",
+     "256"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "1",
+    "location": "cuda:0",
+    "numel": 256,
+    "dtype": "torch.float32",
+    "bytes": 1024
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "2",
+     "cuda:0",
+     "3409920"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "2",
+    "location": "cuda:0",
+    "numel": 3409920,
+    "dtype": "torch.float32",
+    "bytes": 13639680
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "2",
+     "cuda:0",
+     "3409920"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "2",
+    "location": "cuda:0",
+    "numel": 3409920,
+    "dtype": "torch.float32",
+    "bytes": 13639680
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "2",
+     "cuda:0",
+     "3409920"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "2",
+    "location": "cuda:0",
+    "numel": 3409920,
+    "dtype": "torch.float32",
+    "bytes": 13639680
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "2",
+     "cuda:0",
+     "3409920"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "2",
+    "location": "cuda:0",
+    "numel": 3409920,
+    "dtype": "torch.float32",
+    "bytes": 13639680
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "3",
+     "cuda:0",
+     "32768"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "3",
+    "location": "cuda:0",
+    "numel": 32768,
+    "dtype": "torch.float32",
+    "bytes": 131072
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "4",
+     "cuda:0",
+     "128"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "4",
+    "location": "cuda:0",
+    "numel": 128,
+    "dtype": "torch.float32",
+    "bytes": 512
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "5",
+     "cuda:0",
+     "32768"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "5",
+    "location": "cuda:0",
+    "numel": 32768,
+    "dtype": "torch.float32",
+    "bytes": 131072
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "6",
+     "cuda:0",
+     "256"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "6",
+    "location": "cuda:0",
+    "numel": 256,
+    "dtype": "torch.float32",
+    "bytes": 1024
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "7",
+     "cuda:0",
+     "768512"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "7",
+    "location": "cuda:0",
+    "numel": 768512,
+    "dtype": "torch.float32",
+    "bytes": 3074048
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "8",
+     "cuda:0",
+     "3002"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "8",
+    "location": "cuda:0",
+    "numel": 3002,
+    "dtype": "torch.float32",
+    "bytes": 12008
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "9",
+     "cuda:0",
+     "16384"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "9",
+    "location": "cuda:0",
+    "numel": 16384,
+    "dtype": "torch.float32",
+    "bytes": 65536
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "10",
+     "cuda:0",
+     "64"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "10",
+    "location": "cuda:0",
+    "numel": 64,
+    "dtype": "torch.float32",
+    "bytes": 256
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "11",
+     "cuda:0",
+     "2048"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "11",
+    "location": "cuda:0",
+    "numel": 2048,
+    "dtype": "torch.float32",
+    "bytes": 8192
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "12",
+     "cuda:0",
+     "32"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "12",
+    "location": "cuda:0",
+    "numel": 32,
+    "dtype": "torch.float32",
+    "bytes": 128
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "13",
+     "cuda:0",
+     "320"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "13",
+    "location": "cuda:0",
+    "numel": 320,
+    "dtype": "torch.float32",
+    "bytes": 1280
+   },
+   {
+    "tuple": [
+     "storage",
+     "<class '__main__.Stub_torch_FloatStorage'>",
+     "14",
+     "cuda:0",
+     "10"
+    ],
+    "storage_class": "FloatStorage",
+    "key": "14",
+    "location": "cuda:0",
+    "numel": 10,
+    "dtype": "torch.float32",
+    "bytes": 40
+   }
+  ],
+  "notes": [
+   "AURORA_highres_model_weights/byteorder = 'little'",
+   "AURORA_highres_model_weights/version = '3\\n'"
+  ],
+  "size_on_disk": 20146232,
+  "zip_total_uncompressed": 20142248,
+  "data_pkl_entry": "AURORA_highres_model_weights/data.pkl",
+  "data_pkl_bytes": 2280,
+  "modules": {
+   "collections": 1,
+   "torch._utils": 1,
+   "torch": 1
+  },
+  "globals": {
+   "collections.OrderedDict": 1,
+   "torch._utils._rebuild_tensor_v2": 1,
+   "torch.FloatStorage": 1
+  },
+  "root_is_dict": true,
+  "root_keys": [
+   "bulk_encoder.0.weight",
+   "bulk_encoder.0.bias",
+   "lstm.weight_ih_l0",
+   "lstm.weight_hh_l0",
+   "lstm.bias_ih_l0",
+   "lstm.bias_hh_l0",
+   "decoder.0.weight",
+   "decoder.0.bias",
+   "decoder.2.weight",
+   "decoder.2.bias",
+   "decoder.4.weight",
+   "decoder.4.bias",
+   "celltype_decoder.0.weight",
+   "celltype_decoder.0.bias",
+   "celltype_decoder.2.weight",
+   "celltype_decoder.2.bias",
+   "celltype_decoder.4.weight",
+   "celltype_decoder.4.bias"
+  ],
+  "unique_storages": 15,
+  "storage_key_map": {
+   "0": [
+    "bulk_encoder.0.weight"
+   ],
+   "1": [
+    "bulk_encoder.0.bias"
+   ],
+   "2": [
+    "lstm.weight_ih_l0",
+    "lstm.weight_hh_l0",
+    "lstm.bias_ih_l0",
+    "lstm.bias_hh_l0"
+   ],
+   "3": [
+    "decoder.0.weight"
+   ],
+   "4": [
+    "decoder.0.bias"
+   ],
+   "5": [
+    "decoder.2.weight"
+   ],
+   "6": [
+    "decoder.2.bias"
+   ],
+   "7": [
+    "decoder.4.weight"
+   ],
+   "8": [
+    "decoder.4.bias"
+   ],
+   "9": [
+    "celltype_decoder.0.weight"
+   ],
+   "10": [
+    "celltype_decoder.0.bias"
+   ],
+   "11": [
+    "celltype_decoder.2.weight"
+   ],
+   "12": [
+    "celltype_decoder.2.bias"
+   ],
+   "13": [
+    "celltype_decoder.4.weight"
+   ],
+   "14": [
+    "celltype_decoder.4.bias"
+   ]
+  },
+  "total_storage_bytes": 20139920
+ }
+}

@@ -1,0 +1,18 @@
+# GENERATED FILE -- do not edit by hand.
+# Source of truth: aurora/deps.py  (regenerate with: python tools/sync_requirements.py)
+#
+# Group: istar
+# Purpose: optional iStar super-resolution enhancement of predictions
+#
+# Install with:
+#   pip install -r requirements/optional-istar.txt
+-r inference.txt
+
+einops>=0.6.1
+pytorch-lightning>=2.0.8
+scikit-image>=0.21
+seaborn>=0.13.1
+tomli>=2.0.1
+umap-learn>=0.5.5
+
+# iStar also needs the checkpoints from code/istar/download_checkpoints.sh.

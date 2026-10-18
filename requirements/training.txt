@@ -1,0 +1,16 @@
+# GENERATED FILE -- do not edit by hand.
+# Source of truth: aurora/deps.py  (regenerate with: python tools/sync_requirements.py)
+#
+# Group: training
+# Purpose: train or fine-tune an AURORA model
+#
+# Install with:
+#   pip install -r requirements/training.txt
+-r inference.txt
+
+geopandas>=1.0.1
+pybiomart>=0.2.0  # TCGA protein-coding gene annotation.
+scanpy>=1.10.4
+squidpy>=1.5
+tensorboard>=2.18.0  # Imported through torch.utils.tensorboard for --log.
+torch_geometric  # Only the GCN / GraphLSTM model variants under code/ need it.

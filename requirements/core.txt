@@ -1,0 +1,19 @@
+# GENERATED FILE -- do not edit by hand.
+# Source of truth: aurora/deps.py  (regenerate with: python tools/sync_requirements.py)
+#
+# Group: core
+# Purpose: always installed; the model code itself
+#
+# Install with:
+#   pip install -r requirements/core.txt
+h5py>=3.10
+numpy>=1.26
+pandas>=2.2.3
+Pillow>=10.0
+PyYAML>=6.0
+torch>=2.0  # Install the build that matches your CUDA version, see https://pytorch.org/
+tqdm>=4.67.1
+
+# PyTorch: install the build that matches your CUDA version first, e.g.
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu130
+# then install this file; pip will keep the build you already have.

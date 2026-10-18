@@ -1,0 +1,13 @@
+# GENERATED FILE -- do not edit by hand.
+# Source of truth: aurora/deps.py  (regenerate with: python tools/sync_requirements.py)
+#
+# Group: dev
+# Purpose: running the test-suite and the parity/audit tools
+#
+# Install with:
+#   pip install -r requirements/dev.txt
+-r training.txt
+
+
+# The self-test and the audits run with the standard library plus the
+# training group; nothing else is required.

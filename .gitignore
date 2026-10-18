@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+_ssh_work/
+trained_model/
+*.whl
+
+# Environments
+.venv/
+venv/
+env/
+
+# AURORA run output: everything below is derived and can be regenerated.
+# `aurora_runs/<run>/` holds the whole pipeline output for one run.
+aurora_runs/
+**/aurora_runs/
+
+# Demo data fetched by examples/download_demo_data.py (several GB)
+examples/demo/
+
+# Scratch directories used by the test-suite and the tools
+.aurora_selftest_*/
+.pred_layout_*/
+.histomask_*/
+.payload_layout_*/
+.cli_test_*/
+.cwd_demo/
+_sim/
+_piptmp/
+_pipcheck/
+
+# Model weights: large, and the originals are distributed separately.
+*.pth
+!trained_model/*.pth
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+command.sh

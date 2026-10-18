@@ -1,0 +1,10 @@
+# GENERATED FILE -- do not edit by hand.
+# Source of truth: aurora/deps.py  (regenerate with: python tools/sync_requirements.py)
+#
+# Group: catching
+# Purpose: optional CATCH / pyvips based high-resolution feature backend
+#
+# Install with:
+#   pip install -r requirements/optional-catching.txt
+-r inference.txt
+
