@@ -45,7 +45,7 @@ from aurora.bundle import (  # noqa: E402
 )
 from aurora.errors import AuroraError  # noqa: E402
 
-DEFAULT_OUT = "trained_model/AURORA_combined.pth"
+DEFAULT_OUT = "trained_model/AURORA.pth"
 
 #: ``(asset key, argparse attribute, CLI flag)`` for every bundleable asset.
 ASSET_FLAGS: Tuple[Tuple[str, str, str], ...] = (

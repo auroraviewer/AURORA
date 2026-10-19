@@ -22,16 +22,71 @@ save_folder = f"{main_dir}/{args.output_path}/cnts/"
 bar_folder = f"{main_dir}/{args.output_path}/UNI_multiscale_patches/locs/"
 bulk_folder = f"{main_dir}/{args.output_path}/bulk/"
 
-if not os.path.exists(f"{main_dir}/gene_symbols.csv"):
-    gene_symbols = sc.queries.biomart_annotations(
-                "hsapiens", 
-                attrs=["ensembl_gene_id", "hgnc_symbol"]
-            ).set_index("ensembl_gene_id")
-    gene_symbols.to_csv(f"{main_dir}/gene_symbols.csv")
-else:
-    gene_symbols = pd.read_csv(f"{main_dir}/gene_symbols.csv", index_col=0)
+# The Ensembl-ID -> gene-symbol map is only consulted when an .h5ad stores Ensembl
+# IDs (see the `var_names[0].startswith("ENSG")` branches below).  10x Visium data
+# already uses symbols, so fetching the map up front made every run depend on BioMart:
+# when that service answered with anything but XML, the stage died before reading a
+# single sample.  It is now fetched on first use, and a missing network is reported
+# only if the map is actually needed.
+#
+# Original eager version, kept for reference:
+#
+# if not os.path.exists(f"{main_dir}/gene_symbols.csv"):
+#     gene_symbols = sc.queries.biomart_annotations(
+#                 "hsapiens",
+#                 attrs=["ensembl_gene_id", "hgnc_symbol"]
+#             ).set_index("ensembl_gene_id")
+#     gene_symbols.to_csv(f"{main_dir}/gene_symbols.csv")
+# else:
+#     gene_symbols = pd.read_csv(f"{main_dir}/gene_symbols.csv", index_col=0)
+#
+# gene_symbols = gene_symbols[~gene_symbols.index.duplicated(keep='first')]
 
-gene_symbols = gene_symbols[~gene_symbols.index.duplicated(keep='first')]
+
+def _load_gene_symbols():
+    """Ensembl-ID -> symbol map, from the run's cache or from BioMart."""
+    cache = f"{main_dir}/gene_symbols.csv"
+    if os.path.exists(cache):
+        mapping = pd.read_csv(cache, index_col=0)
+    else:
+        try:
+            mapping = sc.queries.biomart_annotations(
+                        "hsapiens",
+                        attrs=["ensembl_gene_id", "hgnc_symbol"]
+                    ).set_index("ensembl_gene_id")
+        except Exception as error:  # noqa: BLE001 - any transport or XML failure
+            raise SystemExit(
+                "could not fetch the Ensembl -> gene-symbol map from BioMart "
+                f"({type(error).__name__}: {error}).\n"
+                "This map is only needed for data that stores Ensembl IDs. For Visium "
+                "data that already uses gene symbols it is not used at all.\n"
+                f"To supply it yourself, write {cache} with an index column of Ensembl "
+                "IDs and an 'hgnc_symbol' column, then re-run."
+            )
+        mapping.to_csv(cache)
+    return mapping[~mapping.index.duplicated(keep='first')]
+
+
+class _LazyGeneSymbols:
+    """Stands in for the mapping, loading it the first time it is used."""
+
+    _frame = None
+
+    def _get(self):
+        if type(self)._frame is None:
+            type(self)._frame = _load_gene_symbols()
+        return type(self)._frame
+
+    def __getattr__(self, name):
+        return getattr(self._get(), name)
+
+
+if os.path.exists(f"{main_dir}/gene_symbols.csv"):
+    # Cached already: load it eagerly so the file is validated straight away.
+    gene_symbols = pd.read_csv(f"{main_dir}/gene_symbols.csv", index_col=0)
+    gene_symbols = gene_symbols[~gene_symbols.index.duplicated(keep='first')]
+else:
+    gene_symbols = _LazyGeneSymbols()
 # bulk_norm_factor = bulk_norm_factor[~bulk_norm_factor.index.duplicated(keep='first')]
 # save_folder = "/project/hest1k/cnts_norm_by_gene/"
 

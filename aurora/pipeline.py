@@ -31,9 +31,9 @@ from .errors import (
     StagePrerequisiteError,
 )
 from .paths import RunLayout, write_layout_stamp
-from .prepare import prepare_run
+from .prepare import load_run_params, prepare_run
 from .runner import build_stage_environment, run_command
-from .samples import read_sample_sheet
+from .samples import SampleSheet, read_sample_sheet
 from .spec import (
     INFERENCE_PIPELINE,
     MODE_TRAINING,
@@ -98,6 +98,44 @@ class PipelineResult:
         if not self.outcomes:
             return "(no stages were requested)"
         return "\n".join("  " + outcome.describe() for outcome in self.outcomes)
+
+
+def build_context(
+    layout: RunLayout,
+    sheet: SampleSheet,
+    config: RunConfig,
+    checkpoint: Optional[CombinedCheckpoint] = None,
+) -> StageContext:
+    """The stage context a run executes with.
+
+    Parameters come from the files preparation wrote -- from the checkpoint, from
+    ``aurora/defaults.py``, or from ``--param`` -- so a run without a checkpoint (the
+    ``--gene-list``/``--cell-types``/``--norm-factors`` route) still knows its patch
+    sizes.  Anything the checkpoint manifest records and the files do not is filled in
+    afterwards.
+    """
+    lowres_params, highres_params = load_run_params(layout, config)
+    context = StageContext(
+        layout=layout,
+        samples=sheet,
+        lowres_params=lowres_params,
+        highres_params=highres_params,
+        options=config.stage_options(),
+        config=config,
+    )
+    if checkpoint is not None:
+        for stage, params in (
+            ("lowres", context.lowres_params),
+            ("highres", context.highres_params),
+        ):
+            if stage not in checkpoint.manifest.stages:
+                continue
+            entry = checkpoint.manifest.stages[stage]
+            if entry.patch_sizes and not params.get("patch_size"):
+                params["patch_size"] = list(entry.patch_sizes)
+            if entry.img_emb_dim is not None and not params.get("img_emb_dim"):
+                params["img_emb_dim"] = int(entry.img_emb_dim)
+    return context
 
 
 class Pipeline:
@@ -204,29 +242,7 @@ class Pipeline:
             print(f"note: {note}")
         state.save()
 
-        lowres_params: dict = {}
-        highres_params: dict = {}
-        context = StageContext(
-            layout=layout,
-            samples=sheet,
-            lowres_params=lowres_params,
-            highres_params=highres_params,
-            options=config.stage_options(),
-            config=config,
-        )
-        if checkpoint is not None:
-            if "lowres" in checkpoint.manifest.stages:
-                entry = checkpoint.manifest.stages["lowres"]
-                if entry.patch_sizes and not context.lowres_params.get("patch_size"):
-                    context.lowres_params["patch_size"] = list(entry.patch_sizes)
-                if entry.img_emb_dim is not None and not context.lowres_params.get("img_emb_dim"):
-                    context.lowres_params["img_emb_dim"] = int(entry.img_emb_dim)
-            if "highres" in checkpoint.manifest.stages:
-                entry = checkpoint.manifest.stages["highres"]
-                if entry.patch_sizes and not context.highres_params.get("patch_size"):
-                    context.highres_params["patch_size"] = list(entry.patch_sizes)
-                if entry.img_emb_dim is not None and not context.highres_params.get("img_emb_dim"):
-                    context.highres_params["img_emb_dim"] = int(entry.img_emb_dim)
+        context = build_context(layout, sheet, config, checkpoint)
         return cls(config, layout, state, context, checkpoint, assets)
 
     # ------------------------------------------------------------ dependency
@@ -318,7 +334,7 @@ class Pipeline:
             )
             print(
                 "  Training starts from scratch; these weights are not loaded. "
-                "The result is written to checkpoints/aurora_combined.pth."
+                "The result is written to checkpoints/aurora.pth."
             )
         else:
             print(self.checkpoint.describe())

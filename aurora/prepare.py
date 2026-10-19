@@ -367,6 +367,34 @@ def materialize_asset_overrides(layout: RunLayout, config: RunConfig) -> Dict[st
     return written
 
 
+def load_run_params(layout: RunLayout, config: RunConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    """The low- and high-resolution parameters this run is actually using.
+
+    ``prepare_run`` writes ``config/params_lowres.json`` and
+    ``checkpoints/params_highres.json`` from the checkpoint, from the packaged
+    defaults, or from ``--param``.  Stages read the parameters from those files, so the
+    in-memory :class:`~aurora.spec.StageContext` has to read them too: building it from
+    an empty dict made ``features_lowres`` fail with "the combined checkpoint does not
+    record the low-resolution patch sizes" in a run that has no checkpoint at all.
+    """
+    from .defaults import DEFAULT_HIGHRES_PARAMS, DEFAULT_LOWRES_PARAMS
+
+    def read(path: Path, defaults: Mapping[str, Any], stage: str) -> Dict[str, Any]:
+        if path.is_file():
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                data = None
+            if isinstance(data, dict) and data:
+                return data
+        return stage_params(defaults, stage, config.param_overrides)
+
+    return (
+        read(layout.config_dir / "params_lowres.json", DEFAULT_LOWRES_PARAMS, "lowres"),
+        read(layout.checkpoints_dir / "params_highres.json", DEFAULT_HIGHRES_PARAMS, "highres"),
+    )
+
+
 def materialize_default_params(
     layout: RunLayout, config: RunConfig
 ) -> Dict[str, str]:

@@ -65,8 +65,11 @@ class StageContext:
         sizes = self.lowres_params.get("patch_size") or self.lowres_params.get("patch_sizes")
         if not sizes:
             raise ConfigError(
-                "the combined checkpoint does not record the low-resolution patch sizes",
-                hint="Rebuild it with tools/merge_aurora_checkpoints.py so the manifest is complete.",
+                "the run does not record the low-resolution patch sizes",
+                hint=(
+                    "Pass --param patch_size=3584,896,224, or use a combined checkpoint "
+                    "whose manifest records them."
+                ),
             )
         return [int(x) for x in sizes]  # type: ignore[arg-type]
 
@@ -75,8 +78,11 @@ class StageContext:
         sizes = self.highres_params.get("patch_size") or self.highres_params.get("patch_sizes")
         if not sizes:
             raise ConfigError(
-                "the combined checkpoint does not record the high-resolution patch sizes",
-                hint="Rebuild it with tools/merge_aurora_checkpoints.py so the manifest is complete.",
+                "the run does not record the high-resolution patch sizes",
+                hint=(
+                    "Pass --param patch_size=56,14, or use a combined checkpoint whose "
+                    "manifest records them."
+                ),
             )
         return [int(x) for x in sizes]  # type: ignore[arg-type]
 
@@ -344,9 +350,23 @@ def _highres_checkpoint_outputs(ctx: StageContext) -> List[Path]:
     return [_train_path(ctx) / "AURORA_highres_model_weights.pth"]
 
 
+#: What the combine stage writes, and what the downloader calls the ready-to-use file.
+DEFAULT_COMBINED_NAME = "aurora.pth"
+
+#: Name used by earlier versions.  Runs that finished before the change keep working,
+#: because their checkpoint is still recognised as this stage's output.
+LEGACY_COMBINED_NAME = "aurora_combined.pth"
+
+
 def _combined_checkpoint_outputs(ctx: StageContext) -> List[Path]:
-    name = str(ctx.option("combined_name", "aurora_combined.pth"))
-    return [_train_path(ctx) / name]
+    name = str(ctx.option("combined_name", DEFAULT_COMBINED_NAME))
+    path = _train_path(ctx) / name
+    if not path.exists() and name == DEFAULT_COMBINED_NAME:
+        # A run finished before the rename: its result is still a valid checkpoint.
+        legacy = _train_path(ctx) / LEGACY_COMBINED_NAME
+        if legacy.is_file():
+            return [legacy]
+    return [path]
 
 
 def _prepare_highres_training_outputs(ctx: StageContext) -> List[Path]:

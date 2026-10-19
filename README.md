@@ -1,36 +1,18 @@
-<<<<<<< HEAD
-# AURORA
-=======
 # AURORA：Architecture Unveiling through RNA Omics and Routine Histology Analysis
->>>>>>> parent of 9593886 (Update README.md)
 
-AURORA predicts spatially resolved gene expression and cell-type composition directly
-from H&E-stained whole-slide images.
+AURORA predicts multi-resolution spatially resolved gene expression and cell-type composition directly
+from H&E-stained whole-slide images. By default, AURORA predicts at 224 / 56 / 14 px for H&E images at 0.5 µm/px, which corresponds to 112 / 28 / 7 µm.
 
-For each slide you give it, AURORA writes one predicted expression vector and one
-cell-type proportion vector per patch, plus figures. Everything is keyed by the
-sample name you put in the sample sheet.
-
-The model works in two stages:
-
-| stage | patch sizes | what it does |
-|---|---|---|
-| low resolution | 3584 / 896 / 224 px | predicts expression and cell-type proportions across the slide |
-| high resolution | 56 / 14 px | refines that prediction at fine detail |
-
-The high-resolution stage refines the low-resolution one, so it never runs on its
-own. Both stages live in a single `.pth` file.
 
 This README has two parts. Read **[Part 1](#part-1--inference-only)** if you want to
-apply an existing model to new slides. Read **[Part 2](#part-2--training)** if you
+**apply an existing model** to new slides. Read **[Part 2](#part-2--training)** if you
 want to train a model on your own data.
 
 ---
 
 ## Examples
 
-Every green **Example** box can be pasted as it stands. They all run from the
-repository root and use the same small demo dataset, so no path needs editing.
+We provide toy examples for both inference and training modes. Every green **Example** box can be pasted as it stands; they all run from the repository root and use the same small demo dataset, so no path needs editing.
 
 Fetch that dataset once:
 
@@ -40,28 +22,22 @@ python examples/download_demo_data.py
 
 It downloads about 3.7 GB into `examples/demo/`:
 
-| | |
-|---|---|
-| `wsis/TCGA-44-5645-01B-04-BS4.svs` | a LUAD slide from the [Genomic Data Commons](https://portal.gdc.cancer.gov/) |
-| `raw_data/BRCA1`, `raw_data/BRCA2` | two Visium samples from [10x Genomics](https://www.10xgenomics.com/products/spatial-gene-expression) |
-| `Inference_sample.csv`, `Training_samples.csv` | sample sheets for them |
-| `models/aurora_combined.pth` | the published LUAD weights, ready for inference |
+| File | Stage | Description |
+|---|---|---|
+| `wsis/TCGA-44-5645-01B-04-BS4.svs` | Inference | a LUAD slide from the [Genomic Data Commons](https://portal.gdc.cancer.gov/) |
+| `models/aurora.pth` | Inference | the published LUAD weights, ready for inference |
+| `Inference_sample.csv` | Inference | the sample sheet for the inference example |
+| `raw_data/BRCA1`, `raw_data/BRCA2` | Training | two Visium samples from [10x Genomics](https://www.10xgenomics.com/products/spatial-gene-expression) |
+| `Training_samples.csv` | Training | the sample sheet for the training example |
 
-Only one sample is used for inference (`TCGA-44-5645-01B-04-BS4`), and two for
-training (`BRCA1`, `BRCA2`). The download resumes if it is interrupted, and re-running
-it does nothing.
 
-The model comes from the
+The weights come from the
 [AURORA prediction weights](https://huggingface.co/datasets/AURORAData/AURORA_prediction/tree/main/trained_models/LUAD)
-on Hugging Face: `AURORA_LUAD_V2.1.pth`, the full LUAD model. The script checks what it
-downloaded with `aurora inspect`; if your copy is an older low-resolution-only file
-instead, it prints the one command that turns it into the combined checkpoint AURORA
-reads, rather than leaving you with a file inference cannot open.
+on Hugging Face: `AURORA_LUAD_V2.1.pth` is the full LUAD model. The download script
+verifies what it fetched with `aurora inspect`.
 
-UNI2-h is not part of that download. Both parts of AURORA need it, so put it in
-`examples/demo/uni2h` once, from the
-[UNI2-h model page](https://huggingface.co/MahmoodLab/UNI2-h). The demo blocks point
-there.
+> [!IMPORTANT]
+> UNI2-h is not part of that download due to model access control. Please register and download it from the [UNI2-h model page](https://huggingface.co/MahmoodLab/UNI2-h). Both parts of AURORA need it: either put it in `examples/demo/uni2h` for the examples below, or point `--uni-local-path` at your own copy.
 
 > [!TIP]
 > 🟩 **Example**: fetch just the model weights, without the slide or the Visium data
@@ -71,18 +47,6 @@ there.
 > ```
 
 ---
-
-## Requirements
-
-| | what |
-|---|---|
-| hardware | a CUDA GPU is strongly recommended; CPU works but is slow |
-| slides | H&E whole-slide images, usually `.svs`, in one folder |
-| sample sheet | a small CSV naming your slides — see [the sample sheet](#2-write-the-sample-sheet) |
-| model | one combined `.pth`, shipped in `trained_model/` |
-| bulk matrix | a CSV of bulk expression, one column per sample |
-| UNI2-h weights | a local copy of [UNI2-h](https://huggingface.co/MahmoodLab/UNI2-h) |
-
 ## Install
 
 ```bash
@@ -90,8 +54,8 @@ pip install torch --index-url https://download.pytorch.org/whl/cu121   # or your
 pip install -e ".[inference]"
 ```
 
-For training, use `".[training]"` instead. For raw Visium preprocessing also install
-HEST, which is not on PyPI:
+For training, install `".[training]"` instead. For raw Visium preprocessing, also
+install HEST, which is not on PyPI:
 
 ```bash
 git clone https://github.com/mahmoodlab/HEST.git
@@ -112,13 +76,24 @@ pip install pyvips && conda install -c conda-forge pyvips
 
 # Part 1 — Inference only
 
+
+## Requirements
+
+| | what |
+|---|---|
+| hardware | a CUDA GPU is strongly recommended; CPU works but is slow |
+| slides | H&E whole-slide images, usually `.svs`, in one folder |
+| sample sheet | a small CSV naming your slides — see [the sample sheet](#2-write-the-sample-sheet) |
+| model | one combined `.pth`, shipped in `trained_model/` |
+| bulk matrix | a CSV of bulk expression, one column per sample |
+| UNI2-h weights | a local copy of [UNI2-h](https://huggingface.co/MahmoodLab/UNI2-h) |
+
 ## 1. Put your slides in one folder
 
 ```text
 /path/to/my_data/
 ├── wsis/
-│   ├── TCGA-44-5645-01B-04-BS4.svs
-│   └── TCGA-55-7893-01A-01-BS1.svs
+│   └── TCGA-44-5645-01B-04-BS4.svs
 ├── my_samples.csv
 └── my_bulk_expression.csv
 ```
@@ -139,15 +114,13 @@ One CSV drives the whole run. Two columns are required:
 ```csv
 Sample_name,Image_name
 TCGA-44-5645-01B-04-BS4,TCGA-44-5645-01B-04-BS4.svs
-TCGA-55-7893-01A-01-BS1,TCGA-55-7893-01A-01-BS1.svs
 ```
 
 - **`Sample_name`** is the identity of the sample. Every output file and folder uses
   it, so keep it short and unique.
 - **`Image_name`** is the file name of the slide inside `--image-path`.
 
-If each slide sits in its own sub-folder, add an `Image_folder` column naming that
-sub-folder.
+If each slide sits in its own sub-folder, add an `Image_folder` column naming it.
 
 > [!TIP]
 > 🟩 **Example**: the demo sheet, ready to use
@@ -170,7 +143,7 @@ feature extraction and both prediction stages.
 
 The command above uses the checkpoint that ships in `trained_model/`. To run with the
 weights you downloaded instead, pass
-`--model examples/demo/models/aurora_combined.pth`.
+`--model examples/demo/models/aurora.pth`.
 
 `--samples`, `--model`, `--bulk` and `--uni-local-path` are resolved relative to where
 you run the command, while `--image-path` follows `--project`.
@@ -229,11 +202,22 @@ At least one gene or cell type is required.
 > 🟩 **Example**: plot two genes and two cell types of the demo slide
 >
 > ```bash
+> # Low resolution
 > python -m aurora run --project examples/demo --run demo_infer --samples examples/demo/Inference_sample.csv --model trained_model/AURORA_LUAD_combined.pth --stage plot --gene EPCAM IL7R
+> # High resolution
+> python -m aurora run --project examples/demo --run demo_infer --samples examples/demo/Inference_sample.csv --model trained_model/AURORA_LUAD_combined.pth --stage plot --gene EPCAM IL7R --plot-predictions highres --plot-resolution 14
 > ```
 
 Figures go to `aurora_runs/demo_infer/05_plots/`. Plotting reloads the rescaled slide,
 so keep the slides where they are until you are finished with the figures.
+
+> [!IMPORTANT]
+> Resolution and key correspondence for 0.5 µm/px images:
+> | Resolution | Key |
+> | --- | --- |
+> | 112 µm | 224 |
+> | 28 µm | 56 |
+> | 7 µm | 14 |
 
 ## 6. Useful options
 
@@ -253,13 +237,11 @@ so keep the slides where they are until you are finished with the figures.
 > python -m aurora stages --mode inference
 > ```
 
----
-
 ## Reclaiming disk space
 
 A finished run keeps a lot of intermediate material: rescaled slides, multi-scale
-embeddings and scratch files. These are often most of the disk usage. Predictions,
-figures, masks, the resolved inputs, the logs and the run state are never removed.
+embeddings and scratch files. These often account for most of the disk usage, while
+predictions, figures, masks, the resolved inputs, the logs and the run state are never removed.
 
 > [!TIP]
 > 🟩 **Example**: report what the demo run could free, then apply the cleanup
@@ -277,10 +259,10 @@ running those stages again.
 
 # Part 2 — Training
 
-Training uses your own spatial transcriptomics data. AURORA trains on
-[HEST-1K](https://huggingface.co/datasets/MahmoodLab/hest) format data.
+Training uses your own spatial transcriptomics data, supplied in
+[HEST-1K](https://huggingface.co/datasets/MahmoodLab/hest) format.
 
-## 1. What you need
+## Requirements
 
 | | what |
 |---|---|
@@ -292,7 +274,7 @@ Training uses your own spatial transcriptomics data. AURORA trains on
 Each training sample needs a full-resolution H&E image and its spot-level expression.
 If your data is already in HEST-1K format, skip to step 3.
 
-## 2. Install the training extras
+## 1. Install the training extras
 
 > [!TIP]
 > 🟩 **Example**: the training dependencies
@@ -301,7 +283,7 @@ If your data is already in HEST-1K format, skip to step 3.
 > pip install -e ".[training]"
 > ```
 
-## 3. Prepare raw Visium data (optional)
+## 2. Prepare raw Visium data (optional)
 
 Put each Visium sample in its own folder under `raw_data/` **in the project
 directory**, with the H&E image, `filtered_feature_bc_matrix.h5` and the `spatial/`
@@ -344,11 +326,11 @@ Before going further, open `processed_data/spatial_plots` and check that the H&E
 lines up with the spot coordinates. Drop any sample that does not align: misaligned
 samples spoil the whole training set.
 
-## Train
+## 3. Train
 
-Training starts from scratch and needs no pretrained model. Describe the model you want
-to train by giving the gene panel, the cell types and the normalisation factors — one
-required column each, `Genes` for the panel and `gene_type` for the factors.
+Training starts from scratch and needs no pretrained model. You describe the model to
+train by supplying three files: the gene panel (a `Genes` column), the cell types (one
+name per line) and the normalisation factors (a `gene_type` column).
 
 > [!TIP]
 > 🟩 **Example**: train on the two demo samples, with a short run
@@ -356,9 +338,18 @@ required column each, `Genes` for the panel and `gene_type` for the factors.
 > ```bash
 > python -m aurora run --mode training --run demo_train --project examples/demo --samples examples/demo/Training_samples.csv --gene-list examples/BRCA_gene.csv --cell-types examples/BRCA_cell_types.csv --norm-factors examples/BRCA_gene_normalize_factor.csv --uni-local-path examples/demo/uni2h --no-pred-celltype --param num_epochs=10 --auto-prerequisites
 > ```
+>
+> *Note*: the cell-type phase only runs when the cell-type head is trained, so the
+> example above (`--no-pred-celltype`) stops after the expression epochs. It also
+> shortens training to ten epochs with `--param num_epochs=10`; drop that flag to
+> train with the defaults.
 
-If your panel is the one bundled in `trained_model/AURORA_LUAD_combined.pth`, you can
-pass `--model` instead of the three files and AURORA uses that panel.
+The result is a single combined checkpoint at
+`aurora_runs/demo_train/checkpoints/aurora.pth`.
+
+
+If your panel is the one bundled in `trained_model/AURORA_LUAD_combined.pth`, pass
+`--model` instead of the three files and AURORA will use that panel.
 
 The chain is:
 
@@ -376,14 +367,12 @@ usually the slowest step. The default budget is two phases per resolution:
 | low resolution | 400 epochs | 200 epochs | 600 |
 | high resolution | 100 epochs | 100 epochs | 200 |
 
-The cell-type phase only runs when the cell-type head is trained, so the example above
-(`--no-pred-celltype`) stops after the expression epochs. **The examples shorten this to
-ten epochs with `--param num_epochs=10`**; drop that to train with the defaults.
+## 4. Use your trained model
 
-The result is a single combined checkpoint at
-`aurora_runs/demo_train/checkpoints/aurora_combined.pth`.
+Your checkpoint is an ordinary combined checkpoint, so inference works exactly as in
+[Part 1](#part-1--inference-only).
 
-## 5. Adjust the training run
+## Adjust the training run
 
 Epochs, batch size, learning rate and the rest are ordinary settings you can change on
 the command line.
@@ -417,39 +406,6 @@ Decide on the cell-type head at the start: it changes the shape of the model, so
 switching it later means retraining. Training the cell-type head also needs per-spot
 cell-type proportions in `processed_data/deconvolution`, which come from the
 `deconvolution` stage (RCTD, which requires R). The demo above trains expression only.
-
-## 6. Use your trained model
-
-Your checkpoint is an ordinary combined checkpoint, so inference works exactly as in
-Part 1.
-
-> [!TIP]
-> 🟩 **Example**: check the checkpoint the demo run produced
->
-> ```bash
-> python -m aurora validate --model examples/demo/aurora_runs/demo_train/checkpoints/aurora_combined.pth
-> ```
-
-> [!TIP]
-> 🟩 **Example**: run inference with it
->
-> ```bash
-> python -m aurora run --project examples/demo --run demo_trained_infer --samples examples/demo/Inference_sample.csv --model examples/demo/aurora_runs/demo_train/checkpoints/aurora_combined.pth --uni-local-path examples/demo/uni2h --bulk examples/TCGA_LUAD_expression.csv
-> ```
-
----
-
-## Training troubleshooting
-
-| message | what to do |
-|---|---|
-| `missing required package 'hest'` | HEST installs from source; see [Install](#install) |
-| `missing required package 'pyvips'` | the native libvips library is needed too: `conda install -c conda-forge pyvips` |
-| `raw Visium data directory … does not exist` | point `--raw-data` at the folder holding one sub-directory per sample |
-| `the HEST patch dumps … are not usable` | the `preprocess` stage did not finish for that sample; re-run it with `--stage preprocess --force` |
-| `requires a local UNI2-h checkpoint` | pass `--uni-local-path` |
-| `… _prop.csv` not found | the cell-type head needs the `deconvolution` stage, or use `--no-pred-celltype` |
-| a stage refuses because of samples | the run was started with a different `--sample` selection; re-run with the same selection or `--force` |
 
 ---
 
@@ -489,12 +445,6 @@ options.
 | `--dry-run` | off | print the commands without running them |
 | `--force` | off | re-run stages that already completed |
 
-## Environment variables
-
-| variable | effect |
-|---|---|
-| `AURORA_CODE_PATH` | where the original scripts live, if not the checkout's `code/` |
-
 ## What to expect from a run
 
 | | inference | training |
@@ -502,7 +452,7 @@ options.
 | typical time | minutes per slide | hours |
 | GPU memory | a few GB | more, depending on batch size |
 | disk | rescaled slides and embeddings dominate | the same, plus checkpoints |
-| result | predictions and figures | `checkpoints/aurora_combined.pth` |
+| result | predictions and figures | `checkpoints/aurora.pth` |
 
 ## Citation and licence
 

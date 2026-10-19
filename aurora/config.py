@@ -344,7 +344,7 @@ class RunConfig:
             "model_path": str(self.model_path) if self.model_path else "",
             "run_name": self.run_name,
             "mode": self.mode,
-            "combined_name": self.extra.get("combined_name", "aurora_combined.pth"),
+            "combined_name": self.extra.get("combined_name", "aurora.pth"),
             **self.extra,
         }
 

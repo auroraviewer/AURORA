@@ -26,7 +26,7 @@ from .errors import ConfigError
 from .naming import missing_image_hint, resolve_image
 from .paths import CHECKPOINTS_DIRNAME
 from .runner import Command, legacy_stage_command, native_stage_command
-from .spec import StageContext
+from .spec import DEFAULT_COMBINED_NAME, StageContext
 
 #: Figures must be at least this fraction of the rescaled slide, i.e.
 #: ``figure_pixels = image_pixels / downscale`` with ``downscale <= 7``.  Small
@@ -500,7 +500,7 @@ def _combine_commands(ctx: StageContext) -> List[Command]:
     norm = cfg.norm_factor_path or (checkpoints / "gene_normalize_factor.csv")
     lowres = checkpoints / _lowres_weights_name(ctx)
     highres = checkpoints / "AURORA_highres_model_weights.pth"
-    out = checkpoints / str(ctx.option("combined_name", "aurora_combined.pth"))
+    out = checkpoints / str(ctx.option("combined_name", DEFAULT_COMBINED_NAME))
     argv = [
         "--lowres",
         str(lowres),

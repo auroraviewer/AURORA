@@ -16,6 +16,7 @@ import argparse
 import ast
 import csv
 import importlib
+import re
 import json
 import os
 import shutil
@@ -1956,9 +1957,14 @@ def test_readme_training_example() -> str:
     adjustable through ``--param``.
     """
     readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
-    marker = "\n## Train\n"
-    require(marker in readme, "the README no longer has a '## Train' section")
-    section = readme.split(marker, 1)[1]
+    # The training part has been titled "## Train" and "## 2. Train"; match the
+    # heading by its word so renumbering the tutorial does not break this check.
+    heading = re.search(r"(?m)^##+ .*Train.*$", readme)
+    require(heading is not None, "the README has no Train section")
+    section = readme[heading.end():]
+    following = re.search(r"(?m)^## ", section)
+    if following is not None:
+        section = section[: following.start()]
 
     # The first fenced bash block after the heading is the primary example.
     blocks = []
@@ -2286,6 +2292,195 @@ def test_mode_aware_prerequisites(tmp: Path) -> str:
         f"inference gate must require segment: {effective_prerequisites(state, 'rescale')}",
     )
     return "rescale: (segment) for inference, () for training"
+
+
+@check("prepare_st does not need the network to start", "R3")
+def test_prepare_st_is_lazy_about_biomart() -> str:
+    """The Ensembl map is fetched on use, not at import.
+
+    ``code/prepare_st.py`` used to call BioMart before reading any sample, so a service
+    that answered with an HTML error page killed the training chain for Visium data
+    whose genes are already symbols and need no mapping at all.
+    """
+    import ast
+
+    path = REPO_ROOT / "code" / "prepare_st.py"
+    require(path.is_file(), "code/prepare_st.py is missing")
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+
+    def calls_biomart(node: ast.AST) -> bool:
+        for child in ast.walk(node):
+            if isinstance(child, ast.Call):
+                target = child.func
+                name = getattr(target, "attr", getattr(target, "id", ""))
+                if name in ("biomart_annotations", "simple_query"):
+                    return True
+        return False
+
+    # No top-level statement may reach BioMart; it has to live inside a function.
+    offenders = []
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue  # deferred until called, which is the point
+        if calls_biomart(node):
+            offenders.append(getattr(node, "lineno", 0))
+    require(
+        not offenders,
+        f"prepare_st.py calls BioMart at import time (line(s) {offenders})",
+    )
+
+    # And the lazy loader is what the code uses.
+    functions = {
+        node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)
+    }
+    require(
+        "_load_gene_symbols" in functions,
+        "the Ensembl map should be loaded by a function, not at module level",
+    )
+    return "BioMart is only queried when a sample stores Ensembl IDs"
+
+
+@check("a run without a checkpoint still knows its patch sizes", "R3")
+def test_no_checkpoint_params_reach_the_context(tmp: Path) -> str:
+    """Training from ``--gene-list``/``--cell-types``/``--norm-factors`` has no checkpoint.
+
+    The parameters then come from ``aurora/defaults.py`` and preparation writes them
+    into the run.  The stage context used to be built from an empty dict, so the first
+    stage that needed a patch size died with "the combined checkpoint does not record
+    the low-resolution patch sizes" -- in a run that has no checkpoint at all.
+    """
+    from aurora.config import RunConfig
+    from aurora.defaults import DEFAULT_HIGHRES_PARAMS, DEFAULT_LOWRES_PARAMS
+    from aurora.paths import RunLayout
+    from aurora.pipeline import build_context
+    from aurora.prepare import load_run_params, materialize_default_params
+    from aurora.samples import Sample, SampleSheet
+
+    project = build_project(tmp)
+    layout = RunLayout.from_root(project / "aurora_runs" / "nockpt", project)
+    layout.ensure("training")
+    config = RunConfig(
+        project_path=project,
+        run_name="nockpt",
+        mode="training",
+        param_overrides={"num_epochs": 10},
+    )
+
+    # Before preparation the packaged defaults answer, with --param applied.
+    lowres, _highres = load_run_params(layout, config)
+    require(
+        lowres.get("patch_size") == DEFAULT_LOWRES_PARAMS["patch_size"],
+        f"defaults must supply the low-res patch sizes, got {lowres.get('patch_size')}",
+    )
+    require(
+        lowres.get("num_epochs") == 10,
+        f"--param must survive the fallback, got {lowres.get('num_epochs')}",
+    )
+
+    materialize_default_params(layout, config)
+    sheet = SampleSheet(
+        path=None,
+        samples=[Sample(sample_name="BRCA1", image_name="image1.tif")],
+        columns=["Sample", "Dir_name", "Image_name"],
+    )
+    # No checkpoint: exactly the situation that used to raise.
+    context = build_context(layout, sheet, config, checkpoint=None)
+    require(
+        context.lowres_patch_sizes == list(DEFAULT_LOWRES_PARAMS["patch_size"]),
+        f"context should see the low-res patch sizes, got {context.lowres_patch_sizes}",
+    )
+    require(
+        context.highres_patch_sizes == list(DEFAULT_HIGHRES_PARAMS["patch_size"]),
+        f"context should see the high-res patch sizes, got {context.highres_patch_sizes}",
+    )
+    return (
+        f"lowres {context.lowres_patch_sizes}, highres {context.highres_patch_sizes}, "
+        "no checkpoint needed"
+    )
+
+
+@check("the ready-to-use checkpoint is called aurora.pth", "R6")
+def test_combined_checkpoint_name(tmp: Path) -> str:
+    """The final model and the downloaded one are both ``aurora.pth``.
+
+    Runs that finished under the old name keep working: ``aurora_combined.pth`` is still
+    accepted as this stage's output, so an existing run is not reported as unfinished.
+    """
+    from aurora.config import RunConfig
+    from aurora.paths import RunLayout
+    from aurora.pipeline import build_context
+    from aurora.samples import Sample, SampleSheet
+    from aurora.spec import (
+        DEFAULT_COMBINED_NAME,
+        LEGACY_COMBINED_NAME,
+        _combined_checkpoint_outputs,
+    )
+
+    require(
+        DEFAULT_COMBINED_NAME == "aurora.pth",
+        f"the final model should be aurora.pth, got {DEFAULT_COMBINED_NAME}",
+    )
+    require(
+        LEGACY_COMBINED_NAME == "aurora_combined.pth",
+        f"the old name should still be recognised, got {LEGACY_COMBINED_NAME}",
+    )
+
+    project = build_project(tmp)
+    layout = RunLayout.from_root(project / "aurora_runs" / "named", project)
+    layout.ensure("training")
+    config = RunConfig(project_path=project, run_name="named", mode="training")
+    sheet = SampleSheet(
+        path=None,
+        samples=[Sample(sample_name="BRCA1", image_name="image1.tif")],
+        columns=["Sample", "Dir_name", "Image_name"],
+    )
+    context = build_context(layout, sheet, config, checkpoint=None)
+    checkpoints = layout.checkpoints_dir
+
+    # Nothing written yet: the stage declares the new name.
+    (name,) = _combined_checkpoint_outputs(context)
+    require(
+        name.name == "aurora.pth",
+        f"the combine stage should write aurora.pth, got {name.name}",
+    )
+
+    # A run finished before the rename is still recognised.
+    legacy = checkpoints / "aurora_combined.pth"
+    legacy.write_bytes(b"old")
+    (name,) = _combined_checkpoint_outputs(context)
+    require(
+        name.name == "aurora_combined.pth",
+        f"an old run should still count as complete, got {name.name}",
+    )
+
+    # Once the new file exists it wins.
+    (checkpoints / "aurora.pth").write_bytes(b"new")
+    (name,) = _combined_checkpoint_outputs(context)
+    require(
+        name.name == "aurora.pth",
+        f"the new name should take precedence, got {name.name}",
+    )
+
+    # The downloader uses the same name.
+    import importlib.util
+
+    script = REPO_ROOT / "examples" / "download_demo_data.py"
+    spec = importlib.util.spec_from_file_location("downloader_named", script)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    require(
+        module.COMBINED_NAME == "aurora.pth",
+        f"the downloader should produce aurora.pth, got {module.COMBINED_NAME}",
+    )
+
+    # And nothing else still offers the old name as a default.
+    offenders = []
+    for path in sorted((REPO_ROOT / "aurora").rglob("*.py")):
+        text = path.read_text(encoding="utf-8")
+        if LEGACY_COMBINED_NAME in text and path.name != "spec.py":
+            offenders.append(path.name)
+    require(not offenders, f"the old name is still defaulted in: {offenders}")
+    return "aurora.pth everywhere; old runs still recognised"
 
 
 @check("the training defaults match the shipped parameter files", "R6")

@@ -538,7 +538,7 @@ def _next_steps(mode: str, run_name: str, result: Any) -> str:
     else:
         if "combine_checkpoints" in done:
             lines.append(
-                f"  combined checkpoint : aurora_runs/{run_name}/checkpoints/aurora_combined.pth"
+                f"  combined checkpoint : aurora_runs/{run_name}/checkpoints/aurora.pth"
             )
         lines.append(f"  checkpoints : aurora_runs/{run_name}/checkpoints/")
         lines.append(f"  tensorboard : aurora_runs/{run_name}/checkpoints/train_log/")

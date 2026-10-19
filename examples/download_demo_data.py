@@ -45,7 +45,7 @@ MODEL_SIZE = 13_854_757
 
 #: Files in ``trained_model/`` used to turn it into a combined checkpoint.
 HIGHRES_WEIGHTS = "AURORA_highres_model_weights.pth"
-COMBINED_NAME = "aurora_combined.pth"
+COMBINED_NAME = "aurora.pth"
 #: TCGA-44-5645-01B-04-BS4, a LUAD tissue slide, via the GDC file endpoint.
 SLIDE_URL = "https://api.gdc.cancer.gov/data/21a90851-e349-4fc3-bdaa-cc3979529e45"
 SLIDE_NAME = "TCGA-44-5645-01B-04-BS4.svs"
@@ -221,7 +221,7 @@ def download_model(model_file: Path | None = None) -> Path | None:
     The published file may already be the combined checkpoint that AURORA inference
     reads, or a legacy state_dict from the original code base.  Rather than assuming
     either, the download is checked with ``aurora inspect``: a combined file is copied
-    to ``aurora_combined.pth``, and a legacy one is reported with the exact command
+    to ``aurora.pth``, and a legacy one is reported with the exact command
     that converts it.  Nothing silently produces a checkpoint inference cannot open.
     """
     models = DEMO / "models"
