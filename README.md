@@ -355,7 +355,7 @@ usually the slowest step. The default budget is two phases per resolution:
 ## 4. Use your trained model
 
 Your checkpoint is an ordinary combined checkpoint, so inference works exactly as in
-[Part 1](#part-1--inference-only).
+[Part 1](#part-1--inference-from-existing-checkpoints).
 
 ## Adjust the training run
 
@@ -391,6 +391,86 @@ Decide on the cell-type head at the start: it changes the shape of the model, so
 switching it later means retraining. Training the cell-type head also needs per-spot
 cell-type proportions in `processed_data/deconvolution`, which come from the
 `deconvolution` stage (RCTD, which requires R). The demo above trains expression only.
+
+## Optional: Cell-type proportions with RCTD
+
+Everything above trains the expression head only. AURORA can also train the **cell-type
+head**, which predicts how much of each cell type is present at every spot. That head
+learns from per-spot proportions, and AURORA estimates those with
+[RCTD](https://github.com/dmcable/spacexr) from a labelled single-cell reference.
+
+RCTD is R code, so it is the one part of AURORA that `pip install` cannot set up.
+
+### 1. Install R and the RCTD packages
+
+Install R 4.2 or newer, then run this in `R`:
+
+```r
+install.packages(c("BiocManager", "Matrix", "reticulate", "stringr", "optparse",
+                   "anndata", "remotes"))
+BiocManager::install("biomaRt", ask = FALSE)
+remotes::install_github("dmcable/spacexr", build_vignettes = FALSE)
+```
+
+`code/get_deconvolution.R` loads `spacexr`, `anndata`, `stringr`, `Matrix`, `biomaRt`,
+`reticulate` and `optparse`. AURORA starts it with `Rscript`, so `Rscript` must be on
+`PATH` for the same user that runs `aurora`.
+
+### 2. Provide a single-cell reference
+
+RCTD needs a Seurat object saved as `.rds` whose metadata has a `cell_type` column. Those
+names are the cell types the head learns to predict. The stage opens the file **relative
+to the run directory**, so either copy it into the run, or reach outside it with a
+relative path:
+
+```text
+/path/to/my_project/
+├── reference.rds                  the labelled single-cell reference
+├── raw_data/                      one folder per Visium sample
+└── aurora_runs/demo_ct/           the run, created by AURORA
+```
+
+From inside a run, `../../reference.rds` reaches the project directory.
+
+### 3. Estimate the proportions
+
+```bash
+python -m aurora run --mode training --run demo_ct --project /path/to/my_project --samples /path/to/my_project/Training_samples.csv --scrna-reference ../../reference.rds --stage deconvolution --auto-prerequisites
+```
+
+`--auto-prerequisites` converts raw Visium data first if that has not happened yet. The
+stage writes into `aurora_runs/demo_ct/02_features/deconvolution/`:
+
+| file | contents |
+|---|---|
+| `cell_types.csv` | one cell type per line — the classes the head predicts |
+| `<sample>_prop.csv` | per-spot proportions, one row per barcode |
+| `<sample>_prop.pdf` | QC plots, one page per cell type |
+| `RCTD_ref.rds` | the reference RCTD built, reused by later runs |
+
+Look through the PDFs before training: a cell type that is flat everywhere usually means
+the reference does not match the tissue section.
+
+### 4. Train both heads
+
+Leave `--pred-celltype` on — it is the default — and point `--cell-types` at the list the
+stage just wrote:
+
+```bash
+python -m aurora run --mode training --run demo_ct --project /path/to/my_project --samples /path/to/my_project/Training_samples.csv --gene-list examples/BRCA_gene.csv --cell-types /path/to/my_project/aurora_runs/demo_ct/02_features/deconvolution/cell_types.csv --norm-factors examples/BRCA_gene_normalize_factor.csv --auto-prerequisites
+```
+
+The run trains the expression head for `exp_epochs` and the cell-type head for the rest:
+400 + 200 epochs at low resolution, 100 + 100 at high resolution. Both heads end up in
+the same checkpoint, `aurora_runs/demo_ct/checkpoints/aurora.pth`, and inference then
+reports cell-type proportions alongside expression.
+
+Decide this before you start. The head changes the shape of the model, so a checkpoint
+trained with `--no-pred-celltype` cannot gain one later without retraining.
+
+The cell types are fixed by the reference: to predict a different set, build a reference
+whose `cell_type` column uses those names. The list you pass with `--cell-types` must
+match the columns of the `<sample>_prop.csv` files.
 
 ---
 
