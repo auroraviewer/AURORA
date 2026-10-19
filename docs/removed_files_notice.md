@@ -24,7 +24,7 @@ examples
 
 `C:\$Recycle.Bin\<user SID>` contains **no entry whose original path mentions
 `code_dev`**, so it was removed with a permanent delete rather than a recycle.
-No copy exists anywhere under `C:\Edward_Chen`.
+No copy exists anywhere under the user's home directory.
 
 ## 2. Sixteen items from `code/` — in the Recycle Bin and recoverable
 
@@ -106,7 +106,7 @@ this note have now been removed and the workspace root is clean.
 
 | deleted (local time) | size | original path |
 |---|---|---|
-| 22:13:13 | 227,766 | `C:\Edward_Chen\appeal\AURORA-main\code\istar` |
+| 22:13:13 | 227,766 | `<repo>/code/istar` |
 
 The iStar library was removed from `code/` at the same time the iStar stage was
 being taken out of the new code system. It is **recoverable** from the Recycle

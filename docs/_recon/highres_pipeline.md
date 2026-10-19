@@ -1,7 +1,7 @@
 # AURORA high-resolution stage — pipeline reconnaissance
 
 Static (read-only) analysis of the high-resolution branch of AURORA.
-Repository root: `C:\Edward_Chen\appeal\AURORA-main`. No existing file was modified.
+Repository root: `<repo>`. No existing file was modified.
 
 **Analysed in full (the six requested scripts):**
 

@@ -1,6 +1,6 @@
 # AURORA — Training-pipeline reconnaissance report
 
-**Scope.** Static read-only analysis of `C:\Edward_Chen\appeal\AURORA-main`.
+**Scope.** Static read-only analysis of `<repo>`.
 No existing file was modified; this report is the only new file.
 
 Files analysed in full (all in `code/`):

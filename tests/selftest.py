@@ -2793,7 +2793,7 @@ def test_raw_data_resolution(tmp: Path) -> str:
     # The script concatenates every path onto -p:
     #   f"{project_path}/{raw_data_path}", and the same for -m and -o.
     # So assert the *join*, not the individual values: an absolute value here is
-    # what produced "<run>/storage/czh/.../raw_data".
+    # what produced "<run>/abs/path/raw_data".
     require(
         (given_p / given_r).resolve() == raw.resolve(),
         f"-p/-r must resolve to the project's raw_data; "

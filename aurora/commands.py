@@ -733,7 +733,7 @@ def _project_relative(target: Path, project: Path) -> str:
     ``f"{args.project_path}/{args.raw_data_path}"`` and the same for ``-m`` and
     ``-o`` -- so each of those must be *relative to* ``-p``.  An absolute value
     produces the path twice over
-    (``<run>/storage/czh/.../raw_data``), and so does ``os.path.join``'s
+    (``<run>/abs/path/raw_data``), and so does ``os.path.join``'s
     absolute-wins behaviour, which is why the option values are made relative
     here rather than the script changed.
     """

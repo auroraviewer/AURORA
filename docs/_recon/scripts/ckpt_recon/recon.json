@@ -1,6 +1,6 @@
 {
  "AURORA_LUAD_V2.pth": {
-  "path": "C:\\Edward_Chen\\appeal\\AURORA-main\\trained_model\\AURORA_LUAD_V2.pth",
+  "path": "<repo>/trained_model/AURORA_LUAD_V2.pth",
   "entries": [
    {
     "name": "AURORA_model_weights_smooth/data.pkl",
@@ -921,7 +921,7 @@
   "total_storage_bytes": 13848464
  },
  "AURORA_highres_model_weights.pth": {
-  "path": "C:\\Edward_Chen\\appeal\\AURORA-main\\trained_model\\AURORA_highres_model_weights.pth",
+  "path": "<repo>/trained_model\\AURORA_highres_model_weights.pth",
   "entries": [
    {
     "name": "AURORA_highres_model_weights/data.pkl",

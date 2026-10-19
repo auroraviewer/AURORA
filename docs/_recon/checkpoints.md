@@ -375,8 +375,8 @@ Note `LUAD_gene_normalize_factor.csv` lists **17,860** genes while the model pre
 ## 7. Reproduction
 
 ```
-C:\Users\14791\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe \
-  C:\Edward_Chen\appeal\AURORA-main\docs\_recon\scripts\ckpt_recon\recon.py
+python \
+  <repo>/docs\_recon\scripts\ckpt_recon\recon.py
 ```
 
 Requires only the standard library (`zipfile`, `pickle`, `pickletools`, `io`, `json`, `os`, `sys`,
