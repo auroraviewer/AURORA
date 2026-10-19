@@ -12,39 +12,7 @@ want to train a model on your own data.
 
 ## Examples
 
-We provide toy examples for both inference and training modes. Every green **Example** box can be pasted as it stands; they all run from the repository root and use the same small demo dataset, so no path needs editing.
-
-Fetch that dataset once:
-
-```bash
-python examples/download_demo_data.py
-```
-
-It downloads about 3.7 GB into `examples/demo/`:
-
-| File | Stage | Description |
-|---|---|---|
-| `wsis/TCGA-44-5645-01B-04-BS4.svs` | Inference | a LUAD slide from the [Genomic Data Commons](https://portal.gdc.cancer.gov/) |
-| `models/aurora.pth` | Inference | the published LUAD weights, ready for inference |
-| `Inference_sample.csv` | Inference | the sample sheet for the inference example |
-| `raw_data/BRCA1`, `raw_data/BRCA2` | Training | two Visium samples from [10x Genomics](https://www.10xgenomics.com/products/spatial-gene-expression) |
-| `Training_samples.csv` | Training | the sample sheet for the training example |
-
-
-The weights come from the
-[AURORA prediction weights](https://huggingface.co/datasets/AURORAData/AURORA_prediction/tree/main/trained_models/LUAD)
-on Hugging Face: `AURORA_LUAD_V2.1.pth` is the full LUAD model. The download script
-verifies what it fetched with `aurora inspect`.
-
-> [!IMPORTANT]
-> UNI2-h is not part of that download due to model access control. Please register and download it from the [UNI2-h model page](https://huggingface.co/MahmoodLab/UNI2-h). Both parts of AURORA need it: either put it in `examples/demo/uni2h` for the examples below, or point `--uni-local-path` at your own copy.
-
-> [!TIP]
-> 🟩 **Example**: fetch just the model weights, without the slide or the Visium data
->
-> ```bash
-> python examples/download_demo_data.py --what model
-> ```
+We provide toy examples for both inference and training modes with download codes. Every green **Example** box can be pasted as it stands; they all run from the repository root and use the same small demo dataset, so no path needs editing.
 
 ---
 ## Install
@@ -74,7 +42,7 @@ pip install pyvips && conda install -c conda-forge pyvips
 
 ---
 
-# Part 1 — Inference only
+# Part 1 — Inference from existing checkpoints
 
 
 ## Requirements
@@ -106,6 +74,14 @@ The folder name is up to you; pass it with `--image-path` (default `wsis`).
 > ```bash
 > python examples/download_demo_data.py --what inference
 > ```
+
+> [!IMPORTANT]
+> UNI2-h is required but not part of the download code due to model access control. Please register and download it from the [UNI2-h model page](https://huggingface.co/MahmoodLab/UNI2-h). Both parts of AURORA need it: either put it in `examples/demo/uni2h` for the examples below, or point `--uni-local-path` at your own copy.
+
+The weights used in the example come from the
+[AURORA prediction weights](https://huggingface.co/datasets/AURORAData/AURORA_prediction/tree/main/trained_models/LUAD)
+on Hugging Face: `AURORA_LUAD_V2.1.pth` is the LUAD model. The download script
+verifies what it fetched with `aurora inspect`.
 
 ## 2. Write the sample sheet
 
@@ -257,7 +233,7 @@ running those stages again.
 
 ---
 
-# Part 2 — Training
+# Part 2 — Training a new model
 
 Training uses your own spatial transcriptomics data, supplied in
 [HEST-1K](https://huggingface.co/datasets/MahmoodLab/hest) format.
@@ -453,6 +429,24 @@ options.
 | GPU memory | a few GB | more, depending on batch size |
 | disk | rescaled slides and embeddings dominate | the same, plus checkpoints |
 | result | predictions and figures | `checkpoints/aurora.pth` |
+
+## Downloading all examples at once
+Fetch the example datasets once:
+
+```bash
+python examples/download_demo_data.py
+```
+
+It downloads about 3.7 GB into `examples/demo/`:
+
+| File | Stage | Description |
+|---|---|---|
+| `wsis/TCGA-44-5645-01B-04-BS4.svs` | Inference | a LUAD slide from the [Genomic Data Commons](https://portal.gdc.cancer.gov/) |
+| `models/aurora.pth` | Inference | the published LUAD weights, ready for inference |
+| `Inference_sample.csv` | Inference | the sample sheet for the inference example |
+| `raw_data/BRCA1`, `raw_data/BRCA2` | Training | two Visium samples from [10x Genomics](https://www.10xgenomics.com/products/spatial-gene-expression) |
+| `Training_samples.csv` | Training | the sample sheet for the training example |
+
 
 ## Citation and licence
 
