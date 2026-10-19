@@ -4,8 +4,8 @@ AURORA predicts multi-resolution spatially resolved gene expression and cell-typ
 from H&E-stained whole-slide images. By default, AURORA predicts at 224 / 56 / 14 px for H&E images at 0.5 µm/px, which corresponds to 112 / 28 / 7 µm.
 
 
-This README has two parts. Read **[Part 1](#part-1--inference-only)** if you want to
-**apply an existing model** to new slides. Read **[Part 2](#part-2--training)** if you
+This README has two parts. Read **[Part 1](#part-1--inference-from-existing-checkpoints)** if you want to
+**apply an existing model** to new slides. Read **[Part 2](#part-2--training-a-new-model)** if you
 want to train a model on your own data.
 
 ---
@@ -15,22 +15,14 @@ want to train a model on your own data.
 We provide toy examples for both inference and training modes with download codes. Every green **Example** box can be pasted as it stands; they all run from the repository root and use the same small demo dataset, so no path needs editing.
 
 ---
-## Install
 
+# Part 1 — Inference from existing checkpoints
+
+## Install
 ```bash
 pip install torch --index-url https://download.pytorch.org/whl/cu121   # or your CUDA version
 pip install -e ".[inference]"
 ```
-
-For training, install `".[training]"` instead. For raw Visium preprocessing, also
-install HEST, which is not on PyPI:
-
-```bash
-git clone https://github.com/mahmoodlab/HEST.git
-pip install -e HEST
-pip install pyvips && conda install -c conda-forge pyvips
-```
-
 > [!TIP]
 > 🟩 **Example**: check the environment
 >
@@ -40,23 +32,7 @@ pip install pyvips && conda install -c conda-forge pyvips
 
 `doctor` reports which dependency groups are complete and lists anything missing.
 
----
-
-# Part 1 — Inference from existing checkpoints
-
-
-## Requirements
-
-| | what |
-|---|---|
-| hardware | a CUDA GPU is strongly recommended; CPU works but is slow |
-| slides | H&E whole-slide images, usually `.svs`, in one folder |
-| sample sheet | a small CSV naming your slides — see [the sample sheet](#2-write-the-sample-sheet) |
-| model | one combined `.pth`, shipped in `trained_model/` |
-| bulk matrix | a CSV of bulk expression, one column per sample |
-| UNI2-h weights | a local copy of [UNI2-h](https://huggingface.co/MahmoodLab/UNI2-h) |
-
-## 1. Put your slides in one folder
+## 1. Sample preparation
 
 ```text
 /path/to/my_data/
@@ -82,6 +58,18 @@ The weights used in the example come from the
 [AURORA prediction weights](https://huggingface.co/datasets/AURORAData/AURORA_prediction/tree/main/trained_models/LUAD)
 on Hugging Face: `AURORA_LUAD_V2.1.pth` is the LUAD model. The download script
 verifies what it fetched with `aurora inspect`.
+
+> [!Note]
+> **Requirements for applying AURORA to new samples**
+> | | Description |
+>|---|---|
+>| hardware | a CUDA GPU is strongly recommended; CPU works but is slow |
+>| slides | H&E whole-slide images, usually `.svs`, in one folder |
+>| sample sheet | a small CSV naming your slides — see [the sample sheet](#2-write-the-sample-sheet) |
+>| model | one combined `.pth`, shipped in `trained_model/` |
+>| bulk matrix | a CSV of bulk expression, one column per sample |
+>| UNI2-h weights | a local copy of [UNI2-h](https://huggingface.co/MahmoodLab/UNI2-h) |
+
 
 ## 2. Write the sample sheet
 
@@ -238,14 +226,25 @@ running those stages again.
 Training uses your own spatial transcriptomics data, supplied in
 [HEST-1K](https://huggingface.co/datasets/MahmoodLab/hest) format.
 
-## Requirements
+## Install
 
-| | what |
-|---|---|
-| data | HEST-1K formatted samples, or raw Visium to convert |
-| gene panel | the genes to predict, or the panel bundled in a checkpoint |
-| UNI2-h | the same local copy inference uses |
-| GPU | a CUDA GPU; training on CPU is impractical |
+For training, install `".[training]"` instead. For raw Visium preprocessing, also
+install HEST, which is not on PyPI:
+
+```bash
+git clone https://github.com/mahmoodlab/HEST.git
+pip install -e HEST
+pip install pyvips && conda install -c conda-forge pyvips
+```
+
+> [!TIP]
+> 🟩 **Example**: check the environment
+>
+> ```bash
+> python -m aurora doctor
+> ```
+
+`doctor` reports which dependency groups are complete and lists anything missing.
 
 Each training sample needs a full-resolution H&E image and its spot-level expression.
 If your data is already in HEST-1K format, skip to step 3.
@@ -303,6 +302,16 @@ lines up with the spot coordinates. Drop any sample that does not align: misalig
 samples spoil the whole training set.
 
 ## 3. Train
+
+>[!Note]
+> **Requirements for training a new AURORA model**
+>| | Description |
+>|---|---|
+>| data | HEST-1K formatted samples, or raw Visium to convert |
+>| gene panel | the genes to predict, or the panel bundled in a checkpoint |
+>| UNI2-h | the same local copy inference uses |
+>| GPU | a CUDA GPU; training on CPU is impractical |
+
 
 Training starts from scratch and needs no pretrained model. You describe the model to
 train by supplying three files: the gene panel (a `Genes` column), the cell types (one
