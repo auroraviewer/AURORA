@@ -495,9 +495,24 @@ def _predict_highres_arguments(ctx: StageContext) -> List[str]:
 def _combine_commands(ctx: StageContext) -> List[Command]:
     cfg: RunConfig = ctx.config
     checkpoints = _train_path(ctx)
-    gene = cfg.gene_list_path or (checkpoints / "gene_list.csv")
-    cells = cfg.cell_type_path or (checkpoints / "cell_types.csv")
-    norm = cfg.norm_factor_path or (checkpoints / "gene_normalize_factor.csv")
+    # The merge tool runs with the run directory as its working directory, so a path the
+    # user typed relative to their shell (``--gene-list examples/BRCA_gene.csv``) has to
+    # be re-expressed relative to the run, exactly like the other stages' inputs.
+    gene = (
+        relative_to_run(ctx, cfg.gene_list_path)
+        if cfg.gene_list_path
+        else str(checkpoints / "gene_list.csv")
+    )
+    cells = (
+        relative_to_run(ctx, cfg.cell_type_path)
+        if cfg.cell_type_path
+        else str(checkpoints / "cell_types.csv")
+    )
+    norm = (
+        relative_to_run(ctx, cfg.norm_factor_path)
+        if cfg.norm_factor_path
+        else str(checkpoints / "gene_normalize_factor.csv")
+    )
     lowres = checkpoints / _lowres_weights_name(ctx)
     highres = checkpoints / "AURORA_highres_model_weights.pth"
     out = checkpoints / str(ctx.option("combined_name", DEFAULT_COMBINED_NAME))

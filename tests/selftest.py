@@ -2310,19 +2310,16 @@ def test_mode_aware_prerequisites(tmp: Path) -> str:
     return "rescale: (segment) for inference, () for training"
 
 
-@check("prepare_st does not need the network to start", "R3")
-def test_prepare_st_is_lazy_about_biomart() -> str:
+@check("no stage script reaches the network at import", "R3")
+def test_stage_scripts_are_lazy_about_biomart() -> str:
     """The Ensembl map is fetched on use, not at import.
 
-    ``code/prepare_st.py`` used to call BioMart before reading any sample, so a service
-    that answered with an HTML error page killed the training chain for Visium data
-    whose genes are already symbols and need no mapping at all.
+    ``code/prepare_st.py`` and ``code/smooth_cnt.py`` both called BioMart before
+    reading a sample, so a service that answered with an HTML error page killed the
+    training chain for Visium data whose genes are already symbols and need no mapping
+    at all. Every stage script is checked, so a new one cannot reintroduce it.
     """
     import ast
-
-    path = REPO_ROOT / "code" / "prepare_st.py"
-    require(path.is_file(), "code/prepare_st.py is missing")
-    tree = ast.parse(path.read_text(encoding="utf-8"))
 
     def calls_biomart(node: ast.AST) -> bool:
         for child in ast.walk(node):
@@ -2333,27 +2330,30 @@ def test_prepare_st_is_lazy_about_biomart() -> str:
                     return True
         return False
 
-    # No top-level statement may reach BioMart; it has to live inside a function.
+    checked = []
     offenders = []
-    for node in tree.body:
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-            continue  # deferred until called, which is the point
-        if calls_biomart(node):
-            offenders.append(getattr(node, "lineno", 0))
-    require(
-        not offenders,
-        f"prepare_st.py calls BioMart at import time (line(s) {offenders})",
-    )
+    for path in sorted((REPO_ROOT / "code").glob("*.py")):
+        text = path.read_text(encoding="utf-8")
+        if "biomart_annotations" not in text:
+            continue
+        checked.append(path.name)
+        tree = ast.parse(text)
+        for node in tree.body:
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                continue  # deferred until called, which is the point
+            if calls_biomart(node):
+                offenders.append(f"{path.name}:{getattr(node, 'lineno', 0)}")
+        functions = {
+            child.name for child in ast.walk(tree) if isinstance(child, ast.FunctionDef)
+        }
+        require(
+            "_load_gene_symbols" in functions,
+            f"{path.name} should load the Ensembl map from a function",
+        )
 
-    # And the lazy loader is what the code uses.
-    functions = {
-        node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)
-    }
-    require(
-        "_load_gene_symbols" in functions,
-        "the Ensembl map should be loaded by a function, not at module level",
-    )
-    return "BioMart is only queried when a sample stores Ensembl IDs"
+    require(checked, "no stage script declares a BioMart lookup any more")
+    require(not offenders, f"BioMart is reached at import time in: {offenders}")
+    return f"{', '.join(checked)} only query BioMart when a sample stores Ensembl IDs"
 
 
 @check("a run without a checkpoint still knows its patch sizes", "R3")
@@ -2413,6 +2413,60 @@ def test_no_checkpoint_params_reach_the_context(tmp: Path) -> str:
         f"lowres {context.lowres_patch_sizes}, highres {context.highres_patch_sizes}, "
         "no checkpoint needed"
     )
+
+
+@check("the merge stage is handed paths it can open", "R3")
+def test_combine_command_paths(tmp: Path) -> str:
+    """The merge tool runs with the run directory as cwd, so asset paths must move with it.
+
+    It was given ``--gene-list examples/BRCA_gene.csv`` verbatim, which does not exist
+    from inside ``aurora_runs/<run>``: the whole training chain finished and then failed
+    with "cannot read text asset from PosixPath".
+    """
+    from aurora.commands import build_commands
+    from aurora.config import RunConfig
+    from aurora.paths import RunLayout
+    from aurora.pipeline import build_context
+    from aurora.samples import Sample, SampleSheet
+
+    # Real files in the repository, named the way a user would type them.
+    raw = {
+        "gene-list": "examples/BRCA_gene.csv",
+        "cell-types": "examples/BRCA_cell_types.csv",
+        "norm-factors": "examples/BRCA_gene_normalize_factor.csv",
+    }
+    project = build_project(tmp)
+    layout = RunLayout.from_root(project / "aurora_runs" / "merge", project)
+    layout.ensure("training")
+    config = RunConfig(
+        project_path=project,
+        run_name="merge",
+        mode="training",
+        gene_list_path=raw["gene-list"],
+        cell_type_path=raw["cell-types"],
+        norm_factor_path=raw["norm-factors"],
+    )
+    sheet = SampleSheet(
+        path=None,
+        samples=[Sample(sample_name="BRCA1", image_name="image1.tif")],
+        columns=["Sample", "Dir_name", "Image_name"],
+    )
+    context = build_context(layout, sheet, config, checkpoint=None)
+    argv = build_commands("combine_checkpoints", context)[0].argv
+    require(
+        any(str(part).endswith("merge_aurora_checkpoints.py") for part in argv),
+        f"unexpected command: {argv[:2]}",
+    )
+
+    for flag, typed in raw.items():
+        value = argv[argv.index(f"--{flag}") + 1]
+        opened = Path(value) if Path(value).is_absolute() else context.layout.root / value
+        require(
+            opened.resolve().is_file(),
+            f"--{flag} {value!r} does not open from the run directory "
+            f"(the user typed {typed!r})",
+        )
+    return "merge inputs resolve from the run directory"
 
 
 @check("the ready-to-use checkpoint is called aurora.pth", "R6")
