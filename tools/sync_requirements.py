@@ -29,7 +29,7 @@ from aurora.deps import (  # noqa: E402
 REQUIREMENTS_DIR = REPO_ROOT / "requirements"
 
 #: Groups that get a generated file, in dependency order.
-ORDERED_GROUPS: List[str] = ["core", "inference", "training", "hest", "histosweep", "catching", "dev"]
+ORDERED_GROUPS: List[str] = ["core", "inference", "training", "hest", "histosweep", "catching", "compression", "dev"]
 
 #: Extra lines appended to a group's file (things pip needs that are not a
 #: plain PyPI package, or that need a special index / a manual step).
@@ -66,6 +66,16 @@ GROUP_TRAILER: Dict[str, List[str]] = {
         "",
         "# The self-test and the audits run with the standard library plus the",
         "# training group; nothing else is required.",
+    ],
+    "compression": [
+        "",
+        "# Optional: these only make the high-resolution HDF5 smaller.",
+        "# Without them AURORA writes gzip, which h5py supports natively, so a run",
+        "# never depends on this file. 'hdf5plugin' also has to be installed on the",
+        "# machine that *reads* the resulting file.",
+        "# If pip cannot reach your index, these are the two ways that avoid a mirror:",
+        "#   pip install --prefer-binary --retries 5 --timeout 60 hdf5plugin zstandard",
+        "#   conda install -c conda-forge hdf5plugin zstandard",
     ],
 }
 

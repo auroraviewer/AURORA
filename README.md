@@ -32,6 +32,24 @@ pip install -e ".[inference]"
 
 `doctor` reports which dependency groups are complete and lists anything missing.
 
+> [!NOTE]
+> **`hdf5plugin` and `zstandard` are optional**
+>
+> They only make the high-resolution HDF5 output smaller. Without them AURORA writes
+> gzip, which `h5py` handles natively, so nothing else changes. Enable them with
+> `pip install -e ".[compression]"` or
+> `pip install -r requirements/optional-compression.txt`.
+>
+> If `pip install hdf5plugin` fails on your network, these work without a mirror:
+>
+> ```bash
+> pip install --prefer-binary --retries 5 --timeout 60 hdf5plugin zstandard
+> conda install -c conda-forge hdf5plugin zstandard
+> ```
+>
+> A file written with zstd needs `hdf5plugin` on the machine that reads it; with gzip
+> it does not. `--h5-compression gzip` selects gzip explicitly.
+
 ## 1. Sample preparation
 
 ```text
@@ -59,7 +77,23 @@ The weights used in the example come from the
 on Hugging Face: `AURORA_LUAD_V2.1.pth` is the LUAD model. The download script
 verifies what it fetched with `aurora inspect`.
 
-> [!Note]
+> [!NOTE]
+> **Downloading these files by hand**
+>
+>
+>
+> | file | source | name it |
+> |---|---|---|
+> | slide | [GDC](https://portal.gdc.cancer.gov/) file `21a90851-e349-4fc3-bdaa-cc3979529e45` | `wsis/TCGA-44-5645-01B-04-BS4.svs` |
+> | weights | [AURORA prediction weights](https://huggingface.co/datasets/AURORAData/AURORA_prediction/blob/main/trained_models/LUAD/AURORA_LUAD_V2.1.pth) | `models/aurora.pth` |
+> | bulk matrix | already in the repository | `examples/TCGA_LUAD_expression.csv` |
+>
+> The GDC link returns the slide under its file UUID, so the rename is required. The
+> weights may keep their published name `AURORA_LUAD_V2.1.pth` instead — what matters is
+> the path you give to `--model`, not the file name. Check either copy with
+> `python -m aurora inspect --model <file>`.
+
+> [!NOTE]
 > **Requirements for applying AURORA to new samples**
 > | | Description |
 >|---|---|
@@ -99,7 +133,7 @@ If each slide sits in its own sub-folder, add an `Image_folder` column naming it
 > 🟩 **Example**: the whole inference chain on the demo slide
 >
 > ```bash
-> python -m aurora run --project examples/demo --run demo_infer --samples examples/demo/Inference_sample.csv --model trained_model/AURORA_LUAD_combined.pth --uni-local-path examples/demo/uni2h --bulk examples/TCGA_LUAD_expression.csv
+> python -m aurora run --project examples/demo --run demo_infer --samples examples/demo/Inference_sample.csv --model examples/demo/models/aurora.pth --uni-local-path examples/demo/uni2h --bulk examples/TCGA_LUAD_expression.csv
 > ```
 
 That runs the whole chain: segmentation, rescaling, high-resolution patch selection,
@@ -167,9 +201,9 @@ At least one gene or cell type is required.
 >
 > ```bash
 > # Low resolution
-> python -m aurora run --project examples/demo --run demo_infer --samples examples/demo/Inference_sample.csv --model trained_model/AURORA_LUAD_combined.pth --stage plot --gene EPCAM IL7R
+> python -m aurora run --project examples/demo --run demo_infer --samples examples/demo/Inference_sample.csv --model examples/demo/models/aurora.pth --stage plot --gene EPCAM IL7R
 > # High resolution
-> python -m aurora run --project examples/demo --run demo_infer --samples examples/demo/Inference_sample.csv --model trained_model/AURORA_LUAD_combined.pth --stage plot --gene EPCAM IL7R --plot-predictions highres --plot-resolution 14
+> python -m aurora run --project examples/demo --run demo_infer --samples examples/demo/Inference_sample.csv --model examples/demo/models/aurora.pth --stage plot --gene EPCAM IL7R --plot-predictions highres --plot-resolution 14
 > ```
 
 Figures go to `aurora_runs/demo_infer/05_plots/`. Plotting reloads the rescaled slide,
@@ -246,6 +280,12 @@ pip install pyvips && conda install -c conda-forge pyvips
 
 `doctor` reports which dependency groups are complete and lists anything missing.
 
+> [!NOTE]
+> **`hdf5plugin` and `zstandard` are optional here too.** Training works without them;
+> the high-resolution HDF5 output is simply written with gzip. Install them with
+> `pip install -e ".[compression]"` when you want the smaller files, and see
+> [the inference install note](#install) if `pip` cannot reach its index.
+
 Each training sample needs a full-resolution H&E image and its spot-level expression.
 If your data is already in HEST-1K format, skip to step 3.
 
@@ -287,6 +327,21 @@ BRCA2,BRCA2,V1_Breast_Cancer_Block_A_Section_2_image.tif
 > ```bash
 > python examples/download_demo_data.py --what training
 > ```
+
+> [!NOTE]
+> **Downloading these files by hand**
+>
+> Each Visium sample needs three files from 10x Genomics, published under
+> [BRCA1](https://www.10xgenomics.com/datasets/human-breast-cancer-block-a-section-1-1-standard-1-1-0) and [BRCA2](https://www.10xgenomics.com/datasets/human-breast-cancer-block-a-section-2-1-standard-1-1-0):
+>
+> | downloaded file | rename it to |
+> |---|---|
+> | `<sample>_image.tif` | keep the name — `Image_name` in the sheet has to match it |
+> | `<sample>_filtered_feature_bc_matrix.h5` | `filtered_feature_bc_matrix.h5` |
+> | `<sample>_spatial.tar.gz` | unpack it, then rename `…_spatial/` to `spatial/` |
+>
+> Put all three in `raw_data/<Sample>/`, for example `raw_data/BRCA1/`. The preprocessing
+> stage opens those exact names, so the renames are what make hand-downloaded data work.
 
 > [!TIP]
 > 🟩 **Example**: convert them to HEST-1K format

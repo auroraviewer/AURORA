@@ -63,7 +63,7 @@ Imported lazily: ``import aurora.h5out`` needs nothing installed.  ``h5py`` and
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, Mapping, Sequence
+from typing import Any, Dict, Mapping, Optional, Sequence
 
 from .errors import ConfigError
 
@@ -124,6 +124,33 @@ def _spatial_row_order(patch_loc: Any) -> Any:
         return np.empty(0, dtype=np.int64)
     original_row = np.arange(n_rows, dtype=np.int64)
     return np.lexsort((original_row, patch_loc[:, 0], patch_loc[:, 1]))
+
+
+def hdf5plugin_available() -> bool:
+    """True when the optional Zstd HDF5 filter plugin can be imported."""
+    try:
+        import hdf5plugin  # noqa: F401
+    except Exception:  # noqa: BLE001 - a broken install counts as absent
+        return False
+    return True
+
+
+def default_codec() -> str:
+    """The HDF5 codec to use when none was requested.
+
+    ``zstd`` gives smaller files but needs ``hdf5plugin``, which is an optional extra:
+    on a machine where it cannot be installed, writing with gzip keeps the pipeline
+    working because h5py supports it natively.
+    """
+    return "zstd" if hdf5plugin_available() else "gzip"
+
+
+def resolve_codec(requested: Optional[str]) -> str:
+    """``requested`` if the user picked one, otherwise :func:`default_codec`."""
+    if requested is None:
+        return default_codec()
+    text = str(requested).strip().lower()
+    return text or default_codec()
 
 
 def _h5_compression_kwargs(codec: str, level: int) -> Dict[str, Any]:

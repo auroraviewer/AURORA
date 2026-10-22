@@ -85,7 +85,8 @@ class RunConfig:
     only_224: bool = True
     #: High-resolution HDF5 layout, filter and level (command.sh defaults).
     h5_layout: str = "spatial_gene_delta"
-    h5_compression: str = "zstd"
+    #: Empty means "let AURORA choose": zstd when hdf5plugin is installed, else gzip.
+    h5_compression: str = ""
     h5_compression_level: int = 9
     output_format: str = "modern"
     prediction_compression: bool = False

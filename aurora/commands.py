@@ -23,6 +23,7 @@ from typing import List
 from ._legacy import code_dir, repo_root
 from .config import RunConfig
 from .errors import ConfigError
+from .h5out import resolve_codec
 from .naming import missing_image_hint, resolve_image
 from .paths import CHECKPOINTS_DIRNAME
 from .runner import Command, legacy_stage_command, native_stage_command
@@ -477,7 +478,7 @@ def _predict_highres_arguments(ctx: StageContext) -> List[str]:
         "--h5-layout",
         str(ctx.option("h5_layout", "spatial_gene_delta")),
         "--h5-compression",
-        str(ctx.option("h5_compression", "zstd")),
+        resolve_codec(ctx.option("h5_compression")),
         "--h5-compression-level",
         str(int(ctx.option("h5_compression_level", 9))),
     ]

@@ -1,0 +1,20 @@
+# GENERATED FILE -- do not edit by hand.
+# Source of truth: aurora/deps.py  (regenerate with: python tools/sync_requirements.py)
+#
+# Group: compression
+# Purpose: smaller HDF5 outputs (optional; gzip is built into h5py)
+#
+# Install with:
+#   pip install -r requirements/optional-compression.txt
+-r inference.txt
+
+hdf5plugin  # Provides the Zstd HDF5 filter for smaller high-resolution output. Without it AURORA writes gzip.
+zstandard>=0.22.0  # Only for --compress-output; without it that flag is unavailable.
+
+# Optional: these only make the high-resolution HDF5 smaller.
+# Without them AURORA writes gzip, which h5py supports natively, so a run
+# never depends on this file. 'hdf5plugin' also has to be installed on the
+# machine that *reads* the resulting file.
+# If pip cannot reach your index, these are the two ways that avoid a mirror:
+#   pip install --prefer-binary --retries 5 --timeout 60 hdf5plugin zstandard
+#   conda install -c conda-forge hdf5plugin zstandard

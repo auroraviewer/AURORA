@@ -102,9 +102,12 @@ def add_highres_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--h5-compression",
         type=str,
-        default="zstd",
+        default=None,
         choices=["zstd", "gzip", "none"],
-        help="HDF5 filter for the uint8 output (default: zstd; needs hdf5plugin)",
+        help=(
+            "HDF5 filter for the uint8 output "
+            "(default: zstd when hdf5plugin is installed, otherwise gzip)"
+        ),
     )
     parser.add_argument(
         "--h5-compression-level",

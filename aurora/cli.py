@@ -27,6 +27,7 @@ from . import bundle as bundle_mod
 from ._legacy import describe_environment, repo_root
 from .config import RunConfig
 from .deps import (
+    GROUP_PARENT,
     GROUP_PURPOSE,
     GROUP_REQUIREMENTS_FILE,
     check_group,
@@ -145,9 +146,12 @@ def _add_inference_arguments(parser: argparse.ArgumentParser) -> None:
     group.add_argument(
         "--h5-compression",
         type=str,
-        default="zstd",
+        default=None,
         choices=["zstd", "gzip", "none"],
-        help="HDF5 filter for the high-resolution output (default: zstd; needs hdf5plugin)",
+        help=(
+            "HDF5 filter for the high-resolution output "
+            "(default: zstd when hdf5plugin is installed, otherwise gzip)"
+        ),
     )
     group.add_argument(
         "--h5-compression-level",
@@ -832,7 +836,15 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     print(describe_environment())
     print()
     print("Dependency groups")
-    groups = [args.group] if args.group else ["core", "inference", "training", "hest", "histosweep"]
+    # Derived from the policy so a new group shows up without editing this list.
+    # `dev` and `deconvolution` are left out: the first is for working on AURORA
+    # itself, the second is R code that `pip` cannot install.
+    if args.group:
+        groups = [args.group]
+    else:
+        groups = [
+            name for name in GROUP_PARENT if name not in ("dev", "deconvolution")
+        ]
     for group in groups:
         check = check_group(group)
         marker = "OK  " if check.ok else "MISS"

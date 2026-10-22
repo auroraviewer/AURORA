@@ -47,6 +47,7 @@ GROUP_PURPOSE: Dict[str, str] = {
     "deconvolution": "cell-type deconvolution with RCTD (training only, R)",
     "histosweep": "HistoSweep tissue-quality masking before the high-resolution stage",
     "catching": "optional CATCH / pyvips based high-resolution feature backend",
+    "compression": "smaller HDF5 outputs (optional; gzip is built into h5py)",
     "dev": "running the test-suite and the parity/audit tools",
 }
 
@@ -59,6 +60,7 @@ GROUP_REQUIREMENTS_FILE: Dict[str, str] = {
     "deconvolution": None,  # conda + R, see README
     "histosweep": "requirements/optional-histosweep.txt",
     "catching": "requirements/optional-catching.txt",
+    "compression": "requirements/optional-compression.txt",
     "dev": "requirements/dev.txt",
 }
 
@@ -71,6 +73,7 @@ GROUP_PARENT: Dict[str, Optional[str]] = {
     "deconvolution": "training",
     "histosweep": "inference",
     "catching": "inference",
+    "compression": "inference",
     "dev": "training",
 }
 
@@ -132,15 +135,20 @@ DEPENDENCIES: Tuple[Dependency, ...] = (
     Dependency("yaml", "PyYAML", "core", ("segmentation", "config"), min_version="6.0"),
     Dependency("h5py", "h5py", "core", ("predict_highres", "io"), min_version="3.10"),
     # The compact high-resolution HDF5 output is compressed with zstd by default
-    # (see command.sh: --h5_compression zstd), and h5py cannot write or read that
-    # filter without this plugin.  Without it the default predict_highres run
-    # fails, so it belongs to the inference group rather than being optional.
+    # *when this plugin is available* (see h5out.default_codec): AURORA falls back
+    # to gzip, which h5py can write on its own, so neither package is required for a
+    # run to work.  They live in their own group because installing them is the one
+    # step that can fail on a restricted network, and a training or inference run must
+    # not be blocked by that.
     Dependency(
         "hdf5plugin",
         "hdf5plugin",
-        "inference",
+        "compression",
         ("predict_highres", "plot"),
-        note="Provides the Zstd HDF5 filter used by the default high-resolution output.",
+        note=(
+            "Provides the Zstd HDF5 filter for smaller high-resolution output. "
+            "Without it AURORA writes gzip."
+        ),
     ),
     Dependency(
         "torch",
@@ -205,7 +213,7 @@ DEPENDENCIES: Tuple[Dependency, ...] = (
         ),
     ),
     Dependency("matplotlib", "matplotlib", "inference", ("plot", "segment", "features_*"), min_version="3.8", note="Only for --plot and figures."),
-    Dependency("zstandard", "zstandard", "inference", ("predict_highres",), min_version="0.22.0", note="Only for --compress-output."),
+    Dependency("zstandard", "zstandard", "compression", ("predict_highres",), min_version="0.22.0", note="Only for --compress-output; without it that flag is unavailable."),
     # The histosweep stage is mandatory and part of the default inference chain,
     # and it imports `textureAnalysis`, which does `from sklearn.mixture import
     # GaussianMixture` at module level.  So scikit-learn is an *inference*

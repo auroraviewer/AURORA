@@ -679,10 +679,25 @@ def test_inference_requirements() -> str:
     ):
         require(forbidden not in text, f"'{forbidden}' must not be in the inference requirements")
     # And the packages a full default inference run genuinely does need.
-    for needed in ("scikit-learn", "scikit-image", "numba", "hdf5plugin"):
+    for needed in ("scikit-learn", "scikit-image", "numba"):
         require(
             needed in text,
             f"'{needed}' is needed by a mandatory inference stage but is not in inference.txt",
+        )
+    # The compression helpers are optional: a run must work without them, so they
+    # belong to their own extra rather than to the inference install.
+    for optional in ("hdf5plugin", "zstandard"):
+        require(
+            optional not in text,
+            f"'{optional}' is optional and must not block an inference install",
+        )
+    compression = REPO_ROOT / "requirements" / "optional-compression.txt"
+    require(compression.is_file(), f"{compression} is missing")
+    compression_text = compression.read_text(encoding="utf-8")
+    for optional in ("hdf5plugin", "zstandard"):
+        require(
+            optional in compression_text,
+            f"'{optional}' should be offered by optional-compression.txt",
         )
     core = (REPO_ROOT / "requirements" / "core.txt").read_text(encoding="utf-8")
     training = (REPO_ROOT / "requirements" / "training.txt").read_text(encoding="utf-8")
@@ -1278,7 +1293,17 @@ def test_output_format_defaults(tmp: Path) -> str:
     require(namespace.uint8_output is True, "uint8 output must default on")
     require(namespace.only_224 is True, "only-224 must default on")
     require(namespace.h5_layout == "spatial_gene_delta", f"h5 layout: {namespace.h5_layout}")
-    require(namespace.h5_compression == "zstd", f"h5 compression: {namespace.h5_compression}")
+    # The codec is chosen at run time: zstd when hdf5plugin is installed, else gzip.
+    require(
+        namespace.h5_compression in (None, "zstd"),
+        f"h5 compression should default to automatic, got {namespace.h5_compression!r}",
+    )
+    from aurora.h5out import default_codec
+
+    require(
+        default_codec() in ("zstd", "gzip"),
+        f"unexpected automatic codec: {default_codec()!r}",
+    )
     require(namespace.h5_compression_level == 9, f"h5 level: {namespace.h5_compression_level}")
 
     negated = build_parser().parse_args(
@@ -1318,9 +1343,12 @@ def test_output_format_defaults(tmp: Path) -> str:
 
     highres = [str(a) for a in build_commands("predict_highres", context())[0].argv]
     require("--uint8-output" in highres, f"predict_highres needs --uint8-output: {highres}")
+    from aurora.h5out import resolve_codec
+
     for flag, value in (
         ("--h5-layout", "spatial_gene_delta"),
-        ("--h5-compression", "zstd"),
+        # Whatever this machine can write: zstd with hdf5plugin, otherwise gzip.
+        ("--h5-compression", resolve_codec(None)),
         ("--h5-compression-level", "9"),
     ):
         require(flag in highres, f"predict_highres needs {flag}: {highres}")
@@ -1341,25 +1369,45 @@ def test_output_format_defaults(tmp: Path) -> str:
     return "uint8 + only-224 (low res), uint8 + spatial_gene_delta/zstd-9 (high res)"
 
 
-@check("the default high-res format's dependency is declared", "R3")
+@check("the default high-res codec always works", "R3")
 def test_default_format_is_installable() -> str:
-    """zstd is the default HDF5 filter, so its plugin must be a declared dep.
+    """The automatic HDF5 codec must be one this machine can actually write.
 
-    `h5py` cannot write or read the Zstd filter without `hdf5plugin`.  Making
-    zstd the default while leaving the plugin out of the dependency policy would
-    mean a fresh install fails on the default `predict_highres` run.
+    zstd gives smaller files but needs the optional ``hdf5plugin``; gzip is built into
+    h5py.  Choosing at run time keeps a fresh install working when the plugin cannot be
+    installed, which a hard-coded zstd default did not.
     """
     from aurora.config import RunConfig
     from aurora.deps import check_group, dependencies_for_group
+    from aurora.h5out import default_codec, hdf5plugin_available, resolve_codec
 
     config = RunConfig()
-    require(config.h5_compression == "zstd", f"the default codec is {config.h5_compression!r}")
-    if config.h5_compression == "zstd":
-        declared = {dep.distribution for dep in dependencies_for_group("inference")}
+    require(
+        config.h5_compression == "",
+        f"the config should defer the choice, got {config.h5_compression!r}",
+    )
+    codec = resolve_codec(config.h5_compression)
+    require(codec in ("zstd", "gzip"), f"unexpected automatic codec {codec!r}")
+    if codec == "zstd":
         require(
-            "hdf5plugin" in declared,
-            f"the inference group must declare hdf5plugin, it has: {sorted(declared)}",
+            hdf5plugin_available(),
+            "zstd was chosen but hdf5plugin cannot be imported",
         )
+    else:
+        require(not hdf5plugin_available(), "gzip was chosen although hdf5plugin works")
+
+    # When zstd is chosen, its plugin is declared -- in the compression group, which is
+    # optional, so the inference install never depends on it.
+    declared = {dep.distribution for dep in dependencies_for_group("compression")}
+    require(
+        "hdf5plugin" in declared,
+        f"the compression group must declare hdf5plugin, it has: {sorted(declared)}",
+    )
+    inference = {dep.distribution for dep in dependencies_for_group("inference")}
+    require(
+        "hdf5plugin" not in inference and "zstandard" not in inference,
+        "the compression helpers must not be part of the inference install",
+    )
     # Every codec the CLI offers must be either built into h5py or declared.
     from aurora.cli import build_parser
 
@@ -1385,8 +1433,9 @@ def test_default_format_is_installable() -> str:
 
     report = check_group("inference")
     return (
-        f"zstd default, hdf5plugin declared; choices={codecs}; "
-        f"inference group has {len(report.missing)} package(s) not installed here"
+        f"automatic codec {codec}, hdf5plugin in the optional compression group; "
+        f"choices={codecs}; inference group has {len(report.missing)} package(s) not "
+        "installed here"
     )
 
 
