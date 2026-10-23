@@ -618,4 +618,4 @@ It downloads about 3.7 GB into `examples/demo/`:
 
 See [LICENSE](LICENSE). Parts of the segmentation code are adapted from
 [CLAM](https://github.com/mahmoodlab/CLAM) and
-[TRIDENT](https://github.com/mahmoodlab/TRIDENT).
+[TRIDENT](https://github.com/mahmoodlab/TRIDENT). Tissue masking for visualization are adapted from [HistoSweep](https://github.com/amesch441-o1/HistoSweep/tree/main)
