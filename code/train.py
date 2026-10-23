@@ -45,7 +45,7 @@ if os.path.exists(dataset_dir):
 else:
     dataset_exist = []
 
-gene_list_file = f"{main_dir}/{parameters.get('gene_list_file',"AURORA_interim/Gene_to_predict.csv")}"
+gene_list_file = f"{main_dir}/{parameters.get('gene_list_file','AURORA_interim/Gene_to_predict.csv')}"
 gene_list = pd.read_csv(gene_list_file)['Genes'].values
 gene_list = list(gene_list)
 hvg_list = gene_list
@@ -78,7 +78,7 @@ prop_criterion = masked_focal_kl_loss
 
 # Load the data for each set
 train_samples_path = f"{main_dir}/{args.train_samples}"
-celltype_path = f"{main_dir}/{parameters.get('celltype_file', "AURORA_interim/deconvolution/cell_types.csv")}"
+celltype_path = f"{main_dir}/{parameters.get('celltype_file', 'AURORA_interim/deconvolution/cell_types.csv')}"
 # test_samples_path = f"{main_dir}/Lung/Lung_test_samples.csv"
 
 ## Generate training and testing samples

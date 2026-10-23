@@ -263,11 +263,13 @@ Training uses your own spatial transcriptomics data, supplied in
 ## Install
 
 For training, install `".[training]"` instead. For raw Visium preprocessing, also
-install HEST, which is not on PyPI:
+install HEST and TRIDENT, neither of which is on PyPI:
 
 ```bash
 git clone https://github.com/mahmoodlab/HEST.git
 pip install -e HEST
+git clone https://github.com/mahmoodlab/TRIDENT.git
+pip install -e ./TRIDENT
 pip install pyvips && conda install -c conda-forge pyvips
 ```
 
@@ -343,6 +345,26 @@ BRCA2,BRCA2,V1_Breast_Cancer_Block_A_Section_2_image.tif
 > Put all three in `raw_data/<Sample>/`, for example `raw_data/BRCA1/`. The preprocessing
 > stage opens those exact names, so the renames are what make hand-downloaded data work.
 
+### TRIDENT and its segmentation checkpoint
+
+HEST segments tissue through [TRIDENT](https://github.com/mahmoodlab/TRIDENT), which is
+not on PyPI, so it is installed from source as shown above. TRIDENT then needs its
+segmentation weights, and it refuses to run until they are registered in its own
+`segmentation_models/local_ckpts.json`.
+
+Download `deeplabv3_seg_v4.ckpt` from
+[MahmoodLab/hest-tissue-seg](https://huggingface.co/MahmoodLab/hest-tissue-seg/) and
+save it wherever you keep weights, then record it once from the AURORA repository root
+(`model_weights/` below is only an example):
+
+```bash
+python -m aurora hest-setup --ckpt model_weights/deeplabv3_seg_v4.ckpt
+```
+
+`hest-setup` locates the installed `trident` package and writes the entry there; pass
+`--check` to see whether the registration is already in place, and `--config` to write a
+specific `local_ckpts.json` instead. This is a one-time step per machine, not per run.
+
 > [!TIP]
 > 🟩 **Example**: convert them to HEST-1K format
 >
@@ -350,7 +372,7 @@ BRCA2,BRCA2,V1_Breast_Cancer_Block_A_Section_2_image.tif
 > python -m aurora run --mode training --run demo_train --project examples/demo --samples examples/demo/Training_samples.csv --stage preprocess --auto-prerequisites
 > ```
 
-This stage needs HEST and `pyvips`. If your data is already in HEST-1K format, skip it.
+This stage needs HEST, `pyvips` and the TRIDENT checkpoint registered above. If your data is already in HEST-1K format, skip it.
 
 Before going further, open `processed_data/spatial_plots` and check that the H&E image
 lines up with the spot coordinates. Drop any sample that does not align: misaligned
